@@ -1,0 +1,32 @@
+// NNCS Constructor
+{
+  "A":[], // A,B,C,D are matrices 
+  "B":[], 
+  "C":[],
+  "D":[],
+  "control-period": 0.2, // 0.2 seconds as default, can be specified by the user
+  "number-of-reachable-steps": 20, // 20 as default, but should be specified by user
+  "nn-file": "NN-path",
+}
+// NNCS reach
+{
+  "lb": [], // vector
+  "ub": [], // vector
+  "method": "exact-star", // 'exact-star' or 'approx-star'
+  "number-of-cores": 1, // number of cores >= 1
+  "number-of-steps": , // any number greater than 0
+  "lb-refInput": [], // any vector, can also be empty if no reference inputs needed
+  "ub-refInput": [], // any vector, 
+}
+// NNCS verify
+{
+  "lb": [], // vector
+  "ub": [], // vector
+  "method": "exact-star", // 'exact-star' or 'approx-star'
+  "number-of-cores": 1, // number of cores >= 1
+  "number-of-steps": , // any number greater than 0
+  "lb-refInput": [], // any vector, can also be empty if no reference inputs needed
+  "ub-refInput": [], // any vector,
+  "HalfSpace-matrix": [], // any matrix (G)
+  "HalfSpace-vector": [], // any vector (g)
+}

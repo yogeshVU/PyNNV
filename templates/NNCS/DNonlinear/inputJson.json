@@ -1,0 +1,18 @@
+{
+    "dim": 0,
+    "nI": 0, 
+    "dynamics_func": "filename.m",
+    "Ts":0.0, 
+    "outputMat": [], 
+    "nn-file": "NN-path",
+    "feedbackMap": [],
+    "lb": [], 
+    "ub": [], 
+    "method": "approx-star", 
+    "number-of-cores": 1, 
+    "number-of-steps": 1, 
+    "lb-refInput": [], 
+    "ub-refInput": [], 
+    "HalfSpace-matrix": [], 
+    "HalfSpace-vector": []
+}
