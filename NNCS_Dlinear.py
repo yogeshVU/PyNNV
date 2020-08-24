@@ -86,10 +86,10 @@ class NNCSDLinear:
         self.ubRefInput = ubRef
         self.HalfSpaceMatrix = halfSpaceMatrix
         self.HalfSpaceVector = halfSpaceVector
-        initSet = self.eng.Star(lb,ub)
-        self.refInput = self.eng.Star(lbRef,ubRef)
-        print(initSet)
-        print(refInput)
+        # initSet = self.eng.Star(lb,ub)
+        # self.refInput = self.eng.Star(lbRef,ubRef)
+        # print(initSet)
+        # print(refInput)
         
         # self.setReachParam(initSet,numSteps,reachMethod,numCores,refInput,halfSpaceMatrix,halfSpaceVector)    
 
@@ -97,6 +97,8 @@ class NNCSDLinear:
         print(self.lb,self.ub)
         print(self.steps)
         print(self.nnfile)
+        # print("RefInput")
+        # print(self.refInput)
         
 
     def parseJson(self,jsonfile):
@@ -120,7 +122,7 @@ class NNCSDLinear:
         newdata['lb-refInput'] = matlab.double(str2array(data['lb-refInput']))
         newdata['ub-refInput'] = matlab.double(str2array(data['ub-refInput']))
         newdata['HalfSpace-matrix'] =matlab.double(str2array(data['HalfSpace-matrix']))
-        newdata['HalfSpace-vector'] =data['HalfSpace-vector']
+        newdata['HalfSpace-vector'] =matlab.double(str2array(data['HalfSpace-vector']))
 
         self.setPlant(newdata['A'],newdata['B'], newdata['C'],newdata['D'],newdata['Ts'])
         self.setController(data['nnfile'])
@@ -129,16 +131,12 @@ class NNCSDLinear:
 
     def execute(self):
         self.getNNCS()
-        initSet = self.eng.Star(lb,ub)
-        refInput = self.eng.Star(lbRef,ubRef)
-
     
-    
-    def invokeNNCSDLinear(self):
+    def invokeReachibility(self):
         return self.eng.DLinearNNCS_reach(self.nnfile,self.A,self.B,self.C,self.D,self.Ts,self.lb,self.ub,self.steps,self.reach_method,self.cores,self.lbRefInput,self.ubRefInput)
 
     def invokeVerifier(self):
-        return self.eng.DLinearNNCS_verify(self.nnfile,self.A,self.B,self.C,self.D,self.Ts,self.lb,self.ub,self.steps,self.reach_method,self.cores,self.refInput,self.HalfSpaceMatrix,self.HalfSpaceVector)
+        return self.eng.DLinearNNCS_verify(self.nnfile,self.A,self.B,self.C,self.D,self.Ts,self.lb,self.ub,self.steps,self.reach_method,self.cores,self.lbRefInput,self.ubRefInput,self.HalfSpaceMatrix,self.HalfSpaceVector)
 
 def main():
         
@@ -184,11 +182,11 @@ def main():
     
     eng.cd(str(Path(Path(__file__).absolute().parent, "templates/NNCS/DLinear")),nargout=0)
     jsonfile = Path(Path(__file__).absolute().parent, "templates","NNCS","DLinear",'inputJson.json')
-    print(jsonfile)
+    # print(jsonfile)
     simObj = NNCSDLinear(eng)
     simObj.parseJson(str(jsonfile))
-    simObj.printDebug()
-    simObj.invokeNNCSDLinear()
+    simObj.invokeReachibility()
+    # simObj.printDebug()
     simObj.invokeVerifier()
 
         # simObj.execute()
@@ -201,3 +199,15 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# A = [0 1 0 0 0 0 0; 0 0 1 0 0 0 0; 0 0 0 0 0 0 1; 0 0 0 0 1 0 0; 0 0 0 0 0 1 0; 0 0 0 0 0 -2 0; 0 0 -2 0 0 0 0];
+# B = [0; 0; 0; 0; 0; 2; 0];
+# C = [1 0 0 -1 0 0 0; 0 1 0 0 -1 0 0; 0 0 0 0 1 0 0];  % feedback relative distance, relative velocity, longitudinal velocity
+# D = [0; 0; 0];
+# NN_Path = 'controller.mat';
+# lb = [90;29;0;30;30;0;-10];
+# ub = [92;30;0;31;30.2;0;-10];
+# G = [1 0 0 -1 -1.4 0 0];
+# g = 10;
+# DLinearNNCS_verify(NN_Path,A,B,C,D,0.2,lb,ub,5,'approx-star',1,[30;1.4],G,g)    

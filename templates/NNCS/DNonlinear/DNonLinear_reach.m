@@ -3,7 +3,24 @@ function [R, reachTime] = DNonLinear_reach(NN_path,dynamics_func,dim,nI,Ts,outpu
     % Load controller
     controller = Load_nn(NN_path); % User specifies 
     % Load plant (method 1)
-    plant = DNonLinearODE(dim,nI,dynamics_func,Ts,outputMat); % User specifies all matrices and time step (Ts)
+    fhandle = str2func(dynamics_func)
+
+    disp('fhandle')
+    disp(fhandle)
+
+    disp('dim=')
+    disp(dim)
+    disp('nI=')
+    disp(nI)
+    disp('Ts=')
+    disp(Ts)
+    disp('outputMat=')
+    disp(outputMat)
+    disp('feedbackMap')
+    disp(feedbackMap)
+    
+
+    plant = DNonLinearODE(dim,nI,fhandle,Ts,outputMat); % User specifies all matrices and time step (Ts)
     % Contruct NNCS objLct
     nncs = DNonlinearNNCS(controller,plant,feedbackMap);
     
@@ -19,6 +36,8 @@ function [R, reachTime] = DNonLinear_reach(NN_path,dynamics_func,dim,nI,Ts,outpu
     end
     [R,reachTime] = nncs.reach(reachPRM); % Execute reachability analysis
     
+    disp(R)
+
     end
 
 
