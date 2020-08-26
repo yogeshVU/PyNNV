@@ -12,7 +12,7 @@ eng = matlab.engine.start_matlab()
 
 # ADD PATHS OF NEEDED FUNCTIONS TO MATLAB ENVIRONMENT
 matlab_function_path_list = []
-local_matlab_function_path = str(Path(Path(__file__).absolute().parent, "templates/NNCS/DLinear"))
+local_matlab_function_path = str(Path(Path(__file__).absolute().parent, "templates/NNCS/Nonlinear"))
 matlab_function_path_list.append(local_matlab_function_path)
 # local_matlab_function_path = str(Path(Path(__file__).absolute().parent, "templates/NNCS/DNonlinear"))
 # matlab_function_path_list.append(local_matlab_function_path)
@@ -48,9 +48,9 @@ eng.addpath(eng.genpath('/home/ubuntu/yogesh/aatools/diego-nnv/nnv/code/nnv'))
 
 try:
     # rnn = eng.randomnoise_attack(str(mat_file), image_path, 6 , 245 , 0.01 ,meanV, stdV, reach_method, pixels)
-    eng.cd(str(Path(Path(__file__).absolute().parent, "templates/NNCS/DLinear")),nargout=0)
-    # rnn = eng.example1(nargout=0)
-    rnn = eng.DLinearNNCS_verify(nargout=0)
+    eng.cd(str(Path(Path(__file__).absolute().parent, "templates/NNCS/Nonlinear")),nargout=0)
+    rnn = eng.example1(nargout=0)
+    # rnn = eng.DLinearNNCS_verify(nargout=0)
     
     # x = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     # x_matlab = matlab.double(x)

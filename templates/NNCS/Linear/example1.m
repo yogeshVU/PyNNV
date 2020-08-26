@@ -25,7 +25,9 @@ reachPRM.ref_input = [30;1.4]; % Reference input must be a vector for verificati
 %% Reach
 % Execute reachability analysis
 [R,rt] = nncs.reach(reachPRM);
-
+disp('R is=')
+disp(R)
+disp(rt)
 %% Verify
 % Define unsafe region
 G = [1 0 0 -1 -1.4 0 0];
