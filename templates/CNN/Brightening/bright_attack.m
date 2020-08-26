@@ -80,9 +80,9 @@ function r_nn = bright_attack(path_to_CNN, image_path, im_target, threshold, del
     % Evaluation using approx-star method (timeout 0f 2 minutes for each image)
     t = tic;
     
-    %disp(string(im_target))
-    %disp(string(reach_method))
-    %disp(inputSetStar)
+    disp(string(im_target))
+    disp(string(reach_method))
+    disp(inputSetStar)
     r_nn = net.verifyRobustness(inputSetStar, im_target , reach_method, numCores);
     VT_nn = toc(t);
     
