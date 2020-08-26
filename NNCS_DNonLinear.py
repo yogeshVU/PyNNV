@@ -43,6 +43,8 @@ class NNCS_DNonLinear:
         self.HalfSpaceMatrix = []  # // any matrix (G)
         self.HalfSpaceVector = []  # // any matrix (g)
         self.eng = eng
+        self.verify = False
+        self.reach = False
 
     def setController(self,nnfile):
         self.nnfile = nnfile #Path of the NN file
@@ -65,7 +67,7 @@ class NNCS_DNonLinear:
         self.outputMat = outputMat
         self.feedbackMap = feedbackMap
 
-    def parseReachParam(self,lb, ub, numSteps, reachMethod, numCores, lbRef, ubRef,halfSpaceMatrix,halfSpaceVector):
+    def parseReachParam(self,lb, ub, numSteps, reachMethod, numCores, lbRef, ubRef,halfSpaceMatrix,halfSpaceVector,doReachability,doVerify):
         initSet = None
         refInput = None
         
@@ -78,6 +80,8 @@ class NNCS_DNonLinear:
         self.ubRefInput = ubRef
         self.HalfSpaceMatrix = halfSpaceMatrix
         self.HalfSpaceVector = halfSpaceVector
+        self.reach = doReachability
+        self.verify = doVerify
         # initSet = self.eng.Star(lb,ub)
         # self.refInput = self.eng.Star(lbRef,ubRef)
         # print(initSet)
@@ -117,10 +121,20 @@ class NNCS_DNonLinear:
         newdata['HalfSpace-matrix'] =matlab.double(str2array(data['HalfSpace-matrix']))
         newdata['HalfSpace-vector'] =matlab.double(str2array(data['HalfSpace-vector']))
 
+        if data['reach']==1:
+            newdata['reach'] = True
+        else:
+            newdata['reach']= False
+
+        if data['verify']==1:
+            newdata['verify'] = True
+        else:
+            newdata['verify']= False
+
         self.setController(data['nnfile'])
         self.setPlant(dim=newdata['dim'],nI=newdata['nI'], dynamics_func=newdata['dynamic_func'],Ts=newdata['Ts'],outputMat=newdata['outputMat'], feedbackMap=newdata['feedbackMap'])
         self.parseReachParam(lb=newdata['lb'],ub=newdata['ub'], numSteps=data['steps'],reachMethod=data['reach-method'],
-                            numCores=data['cores'],lbRef=newdata['lb-refInput'],ubRef=newdata['ub-refInput'], halfSpaceMatrix= newdata['HalfSpace-matrix'], halfSpaceVector= newdata['HalfSpace-vector'])
+                            numCores=data['cores'],lbRef=newdata['lb-refInput'],ubRef=newdata['ub-refInput'], halfSpaceMatrix= newdata['HalfSpace-matrix'], halfSpaceVector= newdata['HalfSpace-vector'], doReachability=newdata['reach'],doVerify=newdata['verify'])
 
     def execute(self):
         self.getNNCS()
@@ -136,6 +150,12 @@ class NNCS_DNonLinear:
 #                     DNonLinear_verify(NN_path,dynamics_func,dim,nI,Ts,outputMat,feedbackMap,lb,ub,num_of_steps,reachMethod,ref_input,G,g)
 
         return self.eng.DNonLinear_verify(self.nnfile,self.dynamics_func,self.dim,self.nI,self.Ts,self.outputMat,self.feedbackMap,self.lb,self.ub,self.steps,self.reach_method,self.lbRefInput,self.ubRefInput,self.HalfSpaceMatrix,self.HalfSpaceVector)
+    
+    def doVerify(self):
+        return self.verify
+
+    def doReach(self):
+        return self.reach  
 
 def main():
         
@@ -161,8 +181,14 @@ def main():
     jsonfile = Path(Path(__file__).absolute().parent, "templates","NNCS","DNonlinear",'inputJson.json')
     simObj = NNCS_DNonLinear(eng)
     simObj.parseJson(str(jsonfile))
-    simObj.invokeReachibility()
-    simObj.invokeVerifier()
+    # simObj.invokeReachibility()
+    # simObj.invokeVerifier()
+
+    if simObj.doReach():
+        result = simObj.invokeReachibility()
+
+    if simObj.doVerify():
+        result = simObj.invokeVerifier()
     # simObj.printDebug()
     # simObj.invokeVerifier()
 

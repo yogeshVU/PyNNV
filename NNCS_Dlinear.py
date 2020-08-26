@@ -42,6 +42,8 @@ class NNCSDLinear:
         self.HalfSpaceMatrix = []  # // any matrix (G)
         self.HalfSpaceVector = []  # // any matrix (g)
         self.eng = eng
+        self.verify = False
+        self.reach = False
 
     def setPlant(self,A,B,C,D,Ts):
         self.A =  A
@@ -74,7 +76,8 @@ class NNCSDLinear:
         self.HalfSpaceMatrix = halfSpaceMatrix
         self.HalfSpaceVector = halfSpaceVector
 
-    def parseReachParam(self,lb, ub, numSteps, reachMethod, numCores, lbRef, ubRef,halfSpaceMatrix,halfSpaceVector):
+
+    def parseReachParam(self,lb, ub, numSteps, reachMethod, numCores, lbRef, ubRef,halfSpaceMatrix,halfSpaceVector,doReachability,doVerify):
         initSet = None
         refInput = None
         self.lb = lb
@@ -86,6 +89,9 @@ class NNCSDLinear:
         self.ubRefInput = ubRef
         self.HalfSpaceMatrix = halfSpaceMatrix
         self.HalfSpaceVector = halfSpaceVector
+        
+        self.reach = doReachability
+        self.verify = doVerify
         # initSet = self.eng.Star(lb,ub)
         # self.refInput = self.eng.Star(lbRef,ubRef)
         # print(initSet)
@@ -124,10 +130,21 @@ class NNCSDLinear:
         newdata['HalfSpace-matrix'] =matlab.double(str2array(data['HalfSpace-matrix']))
         newdata['HalfSpace-vector'] =matlab.double(str2array(data['HalfSpace-vector']))
 
+        if data['reach']==1:
+            newdata['reach'] = True
+        else:
+            newdata['reach']= False
+
+        if data['verify']==1:
+            newdata['verify'] = True
+        else:
+            newdata['verify']= False
+
+
         self.setPlant(newdata['A'],newdata['B'], newdata['C'],newdata['D'],newdata['Ts'])
         self.setController(data['nnfile'])
         self.parseReachParam(lb=newdata['lb'],ub=newdata['ub'], numSteps=data['steps'],reachMethod=data['reach-method'],
-                            numCores=data['cores'],lbRef=newdata['lb-refInput'],ubRef=newdata['ub-refInput'], halfSpaceMatrix= newdata['HalfSpace-matrix'], halfSpaceVector= newdata['HalfSpace-vector'])
+                            numCores=data['cores'],lbRef=newdata['lb-refInput'],ubRef=newdata['ub-refInput'], halfSpaceMatrix= newdata['HalfSpace-matrix'], halfSpaceVector= newdata['HalfSpace-vector'] ,doReachability=newdata['reach'],doVerify=newdata['verify'])
 
     def execute(self):
         self.getNNCS()
@@ -137,7 +154,12 @@ class NNCSDLinear:
 
     def invokeVerifier(self):
         return self.eng.DLinearNNCS_verify(self.nnfile,self.A,self.B,self.C,self.D,self.Ts,self.lb,self.ub,self.steps,self.reach_method,self.cores,self.lbRefInput,self.ubRefInput,self.HalfSpaceMatrix,self.HalfSpaceVector)
+    
+    def doVerify(self):
+        return self.verify
 
+    def doReach(self):
+        return self.reach    
 def main():
         
 
@@ -185,9 +207,15 @@ def main():
     # print(jsonfile)
     simObj = NNCSDLinear(eng)
     simObj.parseJson(str(jsonfile))
-    simObj.invokeReachibility()
-    # simObj.printDebug()
-    simObj.invokeVerifier()
+    # simObj.invokeReachibility()
+    # # simObj.printDebug()
+    # simObj.invokeVerifier()
+
+    if simObj.doReach():
+        result = simObj.invokeReachibility()
+
+    if simObj.doVerify():
+        result = simObj.invokeVerifier()
 
         # simObj.execute()
     # except Exception as e:

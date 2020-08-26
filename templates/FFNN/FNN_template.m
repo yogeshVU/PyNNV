@@ -51,7 +51,10 @@ if strcmp(procedure,'verify')
     result.safe = safe; % safe (1), unsafe (0), unknown (2)
     result.vt = vt;
     result.counterExamples = counterExamples;
+    disp(result)
 elseif strcmp(procedure,'reach')
+    disp('number of arguments=')
+    disp(nargin)
     if nargin == 4
         reachMethod = 'approx-star';
         [S,t] = Nnetwork.reach(input_set,reachMethod);
@@ -67,6 +70,7 @@ elseif strcmp(procedure,'reach')
     end
     result.reachSet = S;
     result.t = t;
+    disp(result.reachSet)
     
 else
     error('Unknown procedure for the verification of feed-forward neural networks')

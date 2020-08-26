@@ -59,13 +59,13 @@ try:
     # rnn = eng.example(nargout=0)
     # rnn = eng.test_attach(str(mat_file), '../image40.png', 6 , 245 , 0.01 ,meanV, stdV, reach_method)
     # Works
-    # rnn = eng.darkening_attack(str(mat_file), image_path, 6 , 245 , 0.01 ,meanV, stdV, reach_method)
+    rnn = eng.darkening_attack(str(mat_file), image_path, 6 , 245 , 0.01 ,meanV, stdV, reach_method)
     # Works
     # rnn = eng.bright_attack(str(mat_file), image_path, 6 , 245 , 0.01 ,meanV, stdV, reach_method)
 
     # RandomNoise_example:
-    pixels =100
-    rnn = eng.randomnoise_attack(str(mat_file), image_path, 6 , 245 , 0.01 ,meanV, stdV, reach_method, pixels)
+    # pixels =100
+    # rnn = eng.randomnoise_attack(str(mat_file), image_path, 6 , 245 , 0.01 ,meanV, stdV, reach_method, pixels)
 
     # To delete
     # rnn = eng.bright_attack('../vgg16nnv.mat','../image40.png',6,245,0.01,[0.4914, 0.4822, 0.4465],[0.2023, 0.1994, 0.2010],'approx-star')

@@ -14,5 +14,7 @@
     "lb-refInput": "[[30], [1.4]]",
     "ub-refInput": "[[30], [1.4]]",
     "HalfSpace-matrix": "[1, 0, 0, -1, -1.4, 0, 0]",
-    "HalfSpace-vector": "[10]"
+    "HalfSpace-vector": "[10]",
+    "verify":1,
+    "reach":1
 }
