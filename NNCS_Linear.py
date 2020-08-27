@@ -3,6 +3,7 @@ import matlab
 import matlab.engine
 from pathlib import Path
 
+
 import numpy as np
 def array2str(arr, precision=None):
     s=np.array_str(arr, precision=precision)
@@ -149,27 +150,40 @@ class NNCSLinear:
         self.getNNCS()
     
     def invokeReachibility(self):
-        return self.eng.LinearNNCS_reach(self.nnfile,self.A,self.B,self.C,self.D,self.Ts,self.reachableSteps,self.lb,self.ub,self.steps,self.reach_method,self.cores,self.lbRefInput,self.ubRefInput)
+        return self.eng.LinearNNCS_reach(self.nnfile,self.A,self.B,self.C,self.D,self.Ts,self.reachableSteps,self.lb,self.ub,self.steps,self.reach_method,self.cores,self.lbRefInput,self.ubRefInput, nargout=2)
         # function [R,reachTime] = LinearNNCS_reach(NN_path,A,B,C,D,controlPeriod,numReachSteps,lb,ub,control_steps,reachMethod,num_of_cores,lb_ref,ub_ref)
 
 
     def invokeVerifier(self):
         # function [safe, ctE, vT] = LinearNNCS_verify(NN_path,A,B,C,D,controlPeriod,numReachSteps,lb,ub,control_steps,reachMethod,num_of_cores,input_ref,G,g)
 
-        return self.eng.LinearNNCS_verify(self.nnfile,self.A,self.B,self.C,self.D,self.Ts,self.reachableSteps,self.lb,self.ub,self.steps,self.reach_method,self.cores,self.lbRefInput,self.ubRefInput,self.HalfSpaceMatrix,self.HalfSpaceVector)
+        return self.eng.LinearNNCS_verify(self.nnfile,self.A,self.B,self.C,self.D,self.Ts,self.reachableSteps,self.lb,self.ub,self.steps,self.reach_method,self.cores,self.lbRefInput,self.ubRefInput,self.HalfSpaceMatrix,self.HalfSpaceVector, nargout=3)
 
     def doVerify(self):
         return self.verify
 
     def doReach(self):
-        return self.reach    
+        return self.reach
+
+    def plotReachSet(self,starSet,method='boxes2d',color='r',xdim=1,ydim=2,zdim=None):
+        # - method: choose from ['exact','boxes2d', 'boxes3d', 'ranges', 'nofill']
+        # %      1) color: color for the reach sets (e.g. 'r')
+        # %      2) x-dim: dimension of set to plot in x-axis
+        # %      3) y-dim: dimension of set to plot in y-axis
+        # %      4) z-dim: dimension of set to plot in z-axis (only for 'boxes3d')
+        # R{1},'boxes2d','r',1,2
+        # >> plot_sets(R{1},'boxes2d','r',1,2)
+        # >> plot_sets(R{1},'boxes3d','r',1,2,4)
+        # >> plot_sets(R{1},'nofill','r',1,2)
+        return self.eng.plot_sets(starSet,method,color,xdim,ydim,nargout=0)
+
 
 def main():
         
 
     # START MATLAB ENGINE
-    # eng = matlab.engine.start_matlab()
-    eng = matlab.engine.start_matlab('-nojvm')
+    eng = matlab.engine.start_matlab()
+    # eng = matlab.engine.start_matlab('-nojvm')
 
 
     # ADD PATHS OF NEEDED FUNCTIONS TO MATLAB ENVIRONMENT
@@ -184,7 +198,12 @@ def main():
     eng.addpath(eng.genpath('/home/ubuntu/yogesh/aatools/diego-nnv/nnv/code/nnv'))
     matlab_function_path_list = []
     matlab_function_path_list.append(str(Path(Path(__file__).absolute().parent, "templates/NNCS/Linear")))
+    
+    matlab_function_path_list.append(str(Path(Path(__file__).absolute().parent,"templates")))
+    
     eng.addpath(*matlab_function_path_list)
+
+
 
     
     eng.cd(str(Path(Path(__file__).absolute().parent, "templates/NNCS/Linear")),nargout=0)
@@ -197,10 +216,22 @@ def main():
     # simObj.invokeVerifier()
 
     if simObj.doReach():
-        result = simObj.invokeReachibility()
+        R,rT = simObj.invokeReachibility()
+        # R = eng.workspace['R']
+        # print(R)
+        # print(rT)
 
-    if simObj.doVerify():
-        result = simObj.invokeVerifier()
+        simObj.plotReachSet(R)
+
+
+        # print(reachtime)
+        # R = eng.getfield(result,'R')
+        # print(R)    
+
+
+    # if simObj.doVerify():
+    #     result = simObj.invokeVerifier()
+    #     print(result)
 
         # simObj.execute()
     # except Exception as e:
