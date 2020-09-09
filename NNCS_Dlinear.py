@@ -21,7 +21,7 @@ def str2array(s):
 
 
 
-class NNCSDLinear:
+class NNCS_Dlinear:
     def __init__(self,eng=None):
         self.A =  []
         self.B = []
@@ -205,7 +205,7 @@ def main():
     eng.cd(str(Path(Path(__file__).absolute().parent, "templates/NNCS/DLinear")),nargout=0)
     jsonfile = Path(Path(__file__).absolute().parent, "templates","NNCS","DLinear",'inputJson.json')
     # print(jsonfile)
-    simObj = NNCSDLinear(eng)
+    simObj = NNCS_Dlinear(eng)
     simObj.parseJson(str(jsonfile))
     # simObj.invokeReachibility()
     # # simObj.printDebug()

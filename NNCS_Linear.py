@@ -22,7 +22,7 @@ def str2array(s):
 
 
 
-class NNCSLinear:
+class NNCS_Linear:
     def __init__(self,eng=None):
         self.A =  []
         self.B = []
@@ -209,7 +209,7 @@ def main():
     eng.cd(str(Path(Path(__file__).absolute().parent, "templates/NNCS/Linear")),nargout=0)
     jsonfile = Path(Path(__file__).absolute().parent, "templates","NNCS","Linear",'inputJson.json')
     # print(jsonfile)
-    simObj = NNCSLinear(eng)
+    simObj = NNCS_Linear(eng)
     simObj.parseJson(str(jsonfile))
     # simObj.invokeReachibility()
     # simObj.printDebug()
@@ -220,7 +220,6 @@ def main():
         # R = eng.workspace['R']
         # print(R)
         # print(rT)
-
         simObj.plotReachSet(R)
 
 
@@ -229,9 +228,9 @@ def main():
         # print(R)    
 
 
-    # if simObj.doVerify():
-    #     result = simObj.invokeVerifier()
-    #     print(result)
+    if simObj.doVerify():
+        result = simObj.invokeVerifier()
+        print(result)
 
         # simObj.execute()
     # except Exception as e:
