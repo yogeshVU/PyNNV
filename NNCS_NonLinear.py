@@ -163,7 +163,16 @@ class NNCS_NonLinear:
         return self.verify
 
     def doReach(self):
-        return self.reach    
+        return self.reach  
+    
+    def compute(self):
+        result = {}
+        if self.doReach():
+            result['reachability'] = self.invokeReachibility()
+
+        if self.doVerify():
+            result['verification'] = self.invokeVerifier()
+        return result      
 
 def main():
         
@@ -185,14 +194,15 @@ def main():
     jsonfile = Path(Path(__file__).absolute().parent, "templates","NNCS","Nonlinear",'inputJson.json')
     simObj = NNCS_NonLinear(eng)
     simObj.parseJson(str(jsonfile))
+    print(simObj.compute())
     # simObj.invokeReachibility()
     # simObj.invokeVerifier()
 
-    if simObj.doReach():
-        result = simObj.invokeReachibility()
+    # if simObj.doReach():
+    #     result = simObj.invokeReachibility()
 
-    if simObj.doVerify():
-        result = simObj.invokeVerifier()
+    # if simObj.doVerify():
+    #     result = simObj.invokeVerifier()
     # simObj.printDebug()
     # simObj.invokeVerifier()
 

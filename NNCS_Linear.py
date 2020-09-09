@@ -165,6 +165,17 @@ class NNCS_Linear:
     def doReach(self):
         return self.reach
 
+    
+    def compute(self):
+        result = {}
+        if self.doReach():
+            result['reachability'] = self.invokeReachibility()
+
+        if self.doVerify():
+            result['verification'] = self.invokeVerifier()
+        return result
+
+
     def plotReachSet(self,starSet,method='boxes2d',color='r',xdim=1,ydim=2,zdim=None):
         # - method: choose from ['exact','boxes2d', 'boxes3d', 'ranges', 'nofill']
         # %      1) color: color for the reach sets (e.g. 'r')
@@ -211,26 +222,28 @@ def main():
     # print(jsonfile)
     simObj = NNCS_Linear(eng)
     simObj.parseJson(str(jsonfile))
+    print(simObj.compute())
+
     # simObj.invokeReachibility()
     # simObj.printDebug()
     # simObj.invokeVerifier()
 
-    if simObj.doReach():
-        R,rT = simObj.invokeReachibility()
-        # R = eng.workspace['R']
-        # print(R)
-        # print(rT)
-        simObj.plotReachSet(R)
+    # if simObj.doReach():
+    #     R,rT = simObj.invokeReachibility()
+    #     # R = eng.workspace['R']
+    #     # print(R)
+    #     # print(rT)
+    #     simObj.plotReachSet(R)
 
 
-        # print(reachtime)
-        # R = eng.getfield(result,'R')
-        # print(R)    
+    #     # print(reachtime)
+    #     # R = eng.getfield(result,'R')
+    #     # print(R)    
 
 
-    if simObj.doVerify():
-        result = simObj.invokeVerifier()
-        print(result)
+    # if simObj.doVerify():
+    #     result = simObj.invokeVerifier()
+    #     print(result)
 
         # simObj.execute()
     # except Exception as e:

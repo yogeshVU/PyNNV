@@ -160,6 +160,17 @@ class NNCS_Dlinear:
 
     def doReach(self):
         return self.reach    
+
+    
+    def compute(self):
+        result = {}
+        if self.doReach():
+            result['reachability'] = self.invokeReachibility()
+
+        if self.doVerify():
+            result['verification'] = self.invokeVerifier()
+        return result
+
 def main():
         
 
@@ -207,15 +218,16 @@ def main():
     # print(jsonfile)
     simObj = NNCS_Dlinear(eng)
     simObj.parseJson(str(jsonfile))
+    print(simObj.compute())
     # simObj.invokeReachibility()
     # # simObj.printDebug()
     # simObj.invokeVerifier()
 
-    if simObj.doReach():
-        result = simObj.invokeReachibility()
+    # if simObj.doReach():
+    #     result = simObj.invokeReachibility()
 
-    if simObj.doVerify():
-        result = simObj.invokeVerifier()
+    # if simObj.doVerify():
+    #     result = simObj.invokeVerifier()
 
         # simObj.execute()
     # except Exception as e:

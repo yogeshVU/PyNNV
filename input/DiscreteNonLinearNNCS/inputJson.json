@@ -1,0 +1,20 @@
+{
+    "dim": 6,
+    "nI" : 1,
+    "dynamic_func":"test_dynamicsD",
+    "outputMat":"[[0 ,0 ,0 ,0 ,1 ,0] ,[1 ,0 ,0 ,-1, 0, 0], [0 ,1 ,0 ,0, -1, 0]]",
+    "Ts" : 0.2,
+    "nnfile": "controller_test.mat",
+    "feedbackMap":"[0]",
+    "lb" : "[[90], [29], [0],[30],[30],[0]]",
+    "ub" : "[ [92],[30],[0],[31],[30.2],[0]]",
+    "reach-method": "approx-star",
+    "cores": 1,
+    "steps": 5,
+    "lb-refInput": "[[30], [1.4]]",
+    "ub-refInput": "[[30], [1.4]]",
+    "HalfSpace-matrix": "[1, 0, 0, -1, -1.4, 0]",
+    "HalfSpace-vector": "[10]",
+    "verify":1,
+    "reach":1
+}

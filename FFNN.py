@@ -95,21 +95,34 @@ class FFNN:
     
     def invokeReachibility(self):
         
-        
-        return self.eng.FNN_template(self.nnfile,self.lb,self.ub,'reach',self.reach_method,self.cores)    
-
+        print("invokereachability")
+        result = self.eng.FNN_template(self.nnfile,self.lb,self.ub,'reach',self.reach_method,self.cores)    
+        print(result)
+        return result
         # return self.eng.DLinearNNCS_reach(self.nnfile,self.A,self.B,self.C,self.D,self.Ts,self.lb,self.ub,self.steps,self.reach_method,self.cores,self.lbRefInput,self.ubRefInput)
 
     def invokeVerifier(self):
+        print("invokeVerifier")
         # result7 = FNN_template('controller_test.mat',lb,ub,'verify',G,g,'exact-star',4,10);
-        return self.eng.FNN_template(self.nnfile,self.lb,self.ub,'verify',self.HalfSpaceMatrix,self.HalfSpaceVector,self.reach_method,self.cores,self.simCount)    
+        result=  self.eng.FNN_template(self.nnfile,self.lb,self.ub,'verify',self.HalfSpaceMatrix,self.HalfSpaceVector,self.reach_method,self.cores,self.simCount)    
+        print(result)
+        return result
         # return self.eng.DLinearNNCS_verify(self.nnfile,self.A,self.B,self.C,self.D,self.Ts,self.lb,self.ub,self.steps,self.reach_method,self.cores,self.lbRefInput,self.ubRefInput,self.HalfSpaceMatrix,self.HalfSpaceVector)
 
     def doVerify(self):
         return self.verify
 
     def doReach(self):
-        return self.reach    
+        return self.reach
+
+    def compute(self):
+        result = {}
+        if self.doReach():
+            result['reachability'] = self.invokeReachibility()
+
+        if self.doVerify():
+            result['verification'] = self.invokeVerifier()
+        return result
 
 def main():
         
@@ -131,11 +144,12 @@ def main():
     jsonfile = Path(Path(__file__).absolute().parent, "templates","FFNN",'inputJson.json')
     simObj = FFNN(eng)
     simObj.parseJson(str(jsonfile))
-    if simObj.doReach():
-        result = simObj.invokeReachibility()
+    print(simObj.compute())
+    # if simObj.doReach():
+    #     result = simObj.invokeReachibility()
 
-    if simObj.doVerify():
-        result = simObj.invokeVerifier()
+    # if simObj.doVerify():
+    #     result = simObj.invokeVerifier()
     # simObj.invokeVerifier()
     # simObj.printDebug()
     # simObj.invokeVerifier()

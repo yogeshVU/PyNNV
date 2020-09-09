@@ -103,7 +103,9 @@ class CNN:
             return self.eng.darkening_attack(self.getnnfile(), self.getimage(),self.im_target,self.threshold, self.delta,self.mean, self.std,self.method)
         elif self.attack =="randomnoise":
             return self.eng.randomnoise_attack(self.getnnfile(), self.getimage(),self.im_target,self.threshold, self.delta,self.mean, self.std,self.method,self.pixels)
-
+    
+    def compute(self):
+        return self.invokeattack()    
     
     
 def main():
@@ -133,7 +135,9 @@ def main():
     jsonfile = Path(Path(__file__).absolute().parent, "templates","CNN",'inputJson.json')
     simObj = CNN(eng)
     simObj.parseJson(str(jsonfile))
-    simObj.invokeattack()
+    simObj.compute()
+    # simObj.invokeattack()
+
     
     # simObj.invokeVerifier()
     # simObj.printDebug()

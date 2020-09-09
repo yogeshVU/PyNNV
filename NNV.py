@@ -139,8 +139,8 @@ class ConcreteStrategyB(Strategy):
     
 from pathlib import Path
 import json
-import CNN
-import FFNN
+from CNN import CNN
+from FFNN import FFNN
 from NNCS_NonLinear import NNCS_NonLinear  # Continuous Non Linear
 from NNCS_DNonLinear import NNCS_DNonLinear # Discrete Non Linear
 from NNCS_Dlinear import NNCS_Dlinear # Discrete Linear
@@ -159,13 +159,17 @@ if __name__ == "__main__":
     # to make the right choice.
 
     jsonfile = Path("./input/template_parameters.json")
+    
     with open(jsonfile) as f:
             data = json.load(f)
 
     strategy = data['NNType']
     print("The current strategy is:", strategy)
-    eng = matlab.engine.start_matlab('-nojvm')
+    # eng = matlab.engine.start_matlab('-nojvm')
+    eng = matlab.engine.start_matlab()
 
+    strategy = NNVKeys.template_NN_CNN_key
+    
     if strategy == NNVKeys.template_NN_CNN_key:
         context = CNN(eng)
     elif strategy == NNVKeys.template_NN_FFNN_key:
@@ -183,35 +187,28 @@ if __name__ == "__main__":
         exit()
 
     matlab_function_path_list = []
+    matlab_function_path_list.append(str(Path(Path(__file__).absolute().parent, "templates/NNCS/DLinear")))
+    matlab_function_path_list.append(str(Path(Path(__file__).absolute().parent, "templates/NNCS/DNonlinear")))
+    matlab_function_path_list.append(str(Path(Path(__file__).absolute().parent, "templates/NNCS/Linear")))
     matlab_function_path_list.append(str(Path(Path(__file__).absolute().parent, "templates/NNCS/Nonlinear")))
+    matlab_function_path_list.append(str(Path(Path(__file__).absolute().parent, "templates/CNN")))
+    matlab_function_path_list.append(str(Path(Path(__file__).absolute().parent, "templates/FFNN")))
     matlab_function_path_list.append(str(Path(Path(__file__).absolute().parent, "input")))
     #
     # EXECUTE MATLAB ENGINE
     #
     eng.addpath(*matlab_function_path_list)
     eng.addpath(eng.genpath('/home/ubuntu/yogesh/aatools/diego-nnv/nnv/code/nnv'))
-    # eng.cd(str(Path(Path(__file__).absolute().parent, "templates/NNCS/Nonlinear")),nargout=0)
-    # jsonfile = Path(Path(__file__).absolute().parent, "templates","NNCS","Nonlinear",'inputJson.json')
-    jsonfile = Path("./input/inputJson.json")
+    # jsonfile = Path("./input/inputJson.json")
+    # For CNN we need to have the imagefile and the controller mat-file
+    jsonfile = Path("./input/CNN/inputJson.json")
+    eng.cd(str(Path("./input/CNN")))
+
     # eng.cd(str(Path(Path(__file__).absolute().parent, "templates/NNCS/Nonlinear")),nargout=0)
 
 
     context.parseJson(str(jsonfile))
+    context.compute()
 
-    if context.doReach():
-        result = context.invokeReachibility()
-
-    if context.doVerify():
-        result = context.invokeVerifier()
     eng.exit()
-    
-    # print("Client: Strategy is set to normal sorting.")
-    # context.do_algorithm()
-
-    # print()
-
-    # print("Client: Strategy is set to reverse sorting.")
-    # context.strategy = ConcreteStrategyB()
-    # context.do_algorithm()
-
 
