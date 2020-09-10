@@ -142,34 +142,33 @@ import json
 from CNN import CNN
 from FFNN import FFNN
 from NNCS_NonLinear import NNCS_NonLinear  # Continuous Non Linear
-from NNCS_DNonLinear import NNCS_DNonLinear # Discrete Non Linear
 from NNCS_Dlinear import NNCS_Dlinear # Discrete Linear
 from NNCS_DNonLinear import NNCS_DNonLinear # Discrete NonLinear
 from NNCS_Linear import NNCS_Linear
 
-import matlab
 import matlab.engine
 
 
 import NNVKeys
+import configparser
 
 if __name__ == "__main__":
-    # The client code picks a concrete strategy and passes it to the context.
-    # The client should be aware of the differences between strategies in order
-    # to make the right choice.
-
-    jsonfile = Path("./input/template_parameters.json")
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    jsonfile = Path(config['JOB_INPUT']['PARAMETER_JSON'])
+    # jsonfile = Path("./input/template_parameters.json")
     
     with open(jsonfile) as f:
             data = json.load(f)
 
     strategy = data['NNType']
-    print("The current strategy is:", strategy)
     # eng = matlab.engine.start_matlab('-nojvm')
     eng = matlab.engine.start_matlab()
 
-    strategy = NNVKeys.template_NN_CNN_key
-    
+    # strategy = NNVKeys.template_NN_CNN_key
+    strategy = NNVKeys.template_NN_NNCS_DiscreteNonLinear_key
+    print("The current strategy is:", strategy)
+
     if strategy == NNVKeys.template_NN_CNN_key:
         context = CNN(eng)
     elif strategy == NNVKeys.template_NN_FFNN_key:
@@ -187,28 +186,38 @@ if __name__ == "__main__":
         exit()
 
     matlab_function_path_list = []
-    matlab_function_path_list.append(str(Path(Path(__file__).absolute().parent, "templates/NNCS/DLinear")))
-    matlab_function_path_list.append(str(Path(Path(__file__).absolute().parent, "templates/NNCS/DNonlinear")))
-    matlab_function_path_list.append(str(Path(Path(__file__).absolute().parent, "templates/NNCS/Linear")))
-    matlab_function_path_list.append(str(Path(Path(__file__).absolute().parent, "templates/NNCS/Nonlinear")))
-    matlab_function_path_list.append(str(Path(Path(__file__).absolute().parent, "templates/CNN")))
-    matlab_function_path_list.append(str(Path(Path(__file__).absolute().parent, "templates/FFNN")))
-    matlab_function_path_list.append(str(Path(Path(__file__).absolute().parent, "input")))
-    #
-    # EXECUTE MATLAB ENGINE
-    #
+    for paths in config['MATLAB']['FUNCTION_PATHS'].split("\n"):
+        print(paths)
+        matlab_function_path_list.append(str(Path(paths)))
+
     eng.addpath(*matlab_function_path_list)
-    eng.addpath(eng.genpath('/home/ubuntu/yogesh/aatools/diego-nnv/nnv/code/nnv'))
-    # jsonfile = Path("./input/inputJson.json")
+    NNV_PATH = str(Path(config['MATLAB']['NNV_PATH']))
+    eng.addpath(eng.genpath(NNV_PATH))
     # For CNN we need to have the imagefile and the controller mat-file
-    jsonfile = Path("./input/CNN/inputJson.json")
-    eng.cd(str(Path("./input/CNN")))
+    # jsonfile = Path("./input/CNN/inputJson.json")
+    # eng.cd(str(Path("./input/CNN")))
 
-    # eng.cd(str(Path(Path(__file__).absolute().parent, "templates/NNCS/Nonlinear")),nargout=0)
+    # FNN
+    # jsonfile = Path("./input/FFNN/inputJson.json")
+    # eng.cd(str(Path("./input/FFNN")))
 
+    # ContinuousLinearNNCS
+    # jsonfile = Path("./input/ContinuousLinearNNCS/inputJson.json")
+    # eng.cd(str(Path("./input/ContinuousLinearNNCS")))
+
+    # ContinuousNonLinearNNCS
+    # jsonfile = Path("./input/ContinuousNonLinearNNCS/inputJson.json")
+    # eng.cd(str(Path("./input/ContinuousNonLinearNNCS")))
+
+    #DiscreteLinearNNCS
+    # jsonfile = Path("./input/DiscreteLinearNNCS/inputJson.json")
+    # eng.cd(str(Path("./input/DiscreteLinearNNCS")))
+
+    #DiscreteNonLinearNNCS
+    jsonfile = Path("./input/DiscreteNonLinearNNCS/inputJson.json")
+    eng.cd(str(Path("./input/DiscreteNonLinearNNCS")))
 
     context.parseJson(str(jsonfile))
-    context.compute()
-
+    print(context.compute())
     eng.exit()
 
