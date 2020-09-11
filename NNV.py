@@ -166,7 +166,7 @@ if __name__ == "__main__":
     eng = matlab.engine.start_matlab()
 
     # strategy = NNVKeys.template_NN_CNN_key
-    strategy = NNVKeys.template_NN_NNCS_DiscreteNonLinear_key
+    strategy = NNVKeys.template_NN_FFNN_key
     print("The current strategy is:", strategy)
 
     if strategy == NNVKeys.template_NN_CNN_key:
@@ -198,8 +198,8 @@ if __name__ == "__main__":
     # eng.cd(str(Path("./input/CNN")))
 
     # FNN
-    # jsonfile = Path("./input/FFNN/inputJson.json")
-    # eng.cd(str(Path("./input/FFNN")))
+    jsonfile = Path("./input/FFNN/inputJson.json")
+    eng.cd(str(Path("./input/FFNN")))
 
     # ContinuousLinearNNCS
     # jsonfile = Path("./input/ContinuousLinearNNCS/inputJson.json")
@@ -214,8 +214,8 @@ if __name__ == "__main__":
     # eng.cd(str(Path("./input/DiscreteLinearNNCS")))
 
     #DiscreteNonLinearNNCS
-    jsonfile = Path("./input/DiscreteNonLinearNNCS/inputJson.json")
-    eng.cd(str(Path("./input/DiscreteNonLinearNNCS")))
+    # jsonfile = Path("./input/DiscreteNonLinearNNCS/inputJson.json")
+    # eng.cd(str(Path("./input/DiscreteNonLinearNNCS")))
 
     context.parseJson(str(jsonfile))
     print(context.compute())

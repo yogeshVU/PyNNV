@@ -74,10 +74,10 @@ class FFNN:
 
         newdata ={}
         
-        newdata['lb'] = matlab.double(self.str2matlabArray(data['lb']))
-        newdata['ub'] = matlab.double(self.str2matlabArray(data['ub']))
-        newdata['HalfSpace-matrix'] =matlab.double(self.str2matlabArray(data['HalfSpace-matrix']))
-        newdata['HalfSpace-vector'] =matlab.double(self.str2matlabArray(data['HalfSpace-vector']))
+        newdata['lb'] = self.str2matlabArray(data['lb'])
+        newdata['ub'] = self.str2matlabArray(data['ub'])
+        newdata['HalfSpace-matrix'] =self.str2matlabArray(data['HalfSpace-matrix'])
+        newdata['HalfSpace-vector'] =self.str2matlabArray(data['HalfSpace-vector'])
 
         if data['reach']==1:
             newdata['reach'] = True
