@@ -70,6 +70,8 @@ class NNCS_NonLinear:
         self.feedbackMap = feedbackMap
         self.reachableSteps = reachableSteps
 
+    def str2matlabArray(self,strmat):
+        return self.eng.str2num(strmat)
 
     def parseReachParam(self,lb, ub, numSteps, reachMethod, numCores, lbRef, ubRef,halfSpaceMatrix,halfSpaceVector,doReachability,doVerify):
         initSet = None
@@ -113,19 +115,19 @@ class NNCS_NonLinear:
         newdata['dim'] = data['dim']
         newdata['nI'] = data['nI']
         newdata['dynamic_func'] = data['dynamic_func']
-        newdata['outputMat'] =matlab.double(str2array( data['outputMat'])) 
-        newdata['feedbackMap'] = matlab.double(str2array(data['feedbackMap']))
+        newdata['outputMat'] =self.str2matlabArray( data['outputMat'])
+        newdata['feedbackMap'] = self.str2matlabArray(data['feedbackMap'])
         newdata['Ts'] = data['Ts']
         newdata['reachable-steps'] = float(data['reachable-steps'])
         
         
-        newdata['lb'] = matlab.double(str2array(data['lb']))
+        newdata['lb'] = self.str2matlabArray(data['lb'])
         
-        newdata['ub'] = matlab.double(str2array(data['ub']))
-        newdata['lb-refInput'] = matlab.double(str2array(data['lb-refInput']))
-        newdata['ub-refInput'] = matlab.double(str2array(data['ub-refInput']))
-        newdata['HalfSpace-matrix'] =matlab.double(str2array(data['HalfSpace-matrix']))
-        newdata['HalfSpace-vector'] =matlab.double(str2array(data['HalfSpace-vector']))
+        newdata['ub'] = self.str2matlabArray(data['ub'])
+        newdata['lb-refInput'] = self.str2matlabArray(data['lb-refInput'])
+        newdata['ub-refInput'] = self.str2matlabArray(data['ub-refInput'])
+        newdata['HalfSpace-matrix'] =self.str2matlabArray(data['HalfSpace-matrix'])
+        newdata['HalfSpace-vector'] =self.str2matlabArray(data['HalfSpace-vector'])
 
         if data['reach']==1:
             newdata['reach'] = True

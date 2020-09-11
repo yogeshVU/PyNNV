@@ -40,7 +40,10 @@ class FFNN:
         self.eng = eng
         self.verify = False
         self.reach = False
-    
+
+    def str2matlabArray(self,strmat):
+        return self.eng.str2num(strmat)
+
     def setController(self,nnfile):
         self.nnfile = nnfile #Path of the NN file
 
@@ -71,10 +74,10 @@ class FFNN:
 
         newdata ={}
         
-        newdata['lb'] = matlab.double(str2array(data['lb']))
-        newdata['ub'] = matlab.double(str2array(data['ub']))
-        newdata['HalfSpace-matrix'] =matlab.double(str2array(data['HalfSpace-matrix']))
-        newdata['HalfSpace-vector'] =matlab.double(str2array(data['HalfSpace-vector']))
+        newdata['lb'] = matlab.double(self.str2matlabArray(data['lb']))
+        newdata['ub'] = matlab.double(self.str2matlabArray(data['ub']))
+        newdata['HalfSpace-matrix'] =matlab.double(self.str2matlabArray(data['HalfSpace-matrix']))
+        newdata['HalfSpace-vector'] =matlab.double(self.str2matlabArray(data['HalfSpace-vector']))
 
         if data['reach']==1:
             newdata['reach'] = True

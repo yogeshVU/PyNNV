@@ -67,6 +67,11 @@ class NNCS_Dlinear:
     def getNNCS(self):
         return self.eng.DLinearNNCS(self.getController(),self.getPlant());
 
+
+    def str2matlabArray(self,strmat):
+        return self.eng.str2num(strmat)
+
+
     def setReachParam(self,init_set,numSteps,reachMethod,numCores,refInput, halfSpaceMatrix=None, halfSpaceVector=None):
         self.init_set = init_set
         self.steps = numSteps
@@ -115,20 +120,20 @@ class NNCS_Dlinear:
 
         newdata ={}
         
-        newdata['A'] = matlab.double(str2array(data['A']))
-        newdata['B'] = matlab.double(str2array(data['B']))
-        newdata['C'] = matlab.double(str2array(data['C']))
-        newdata['D'] = matlab.double(str2array(data['D']))
+        newdata['A'] = self.str2matlabArray(data['A'])
+        newdata['B'] = self.str2matlabArray(data['B'])
+        newdata['C'] = self.str2matlabArray(data['C'])
+        newdata['D'] = self.str2matlabArray(data['D'])
         newdata['Ts'] = data['Ts']
         
         
-        newdata['lb'] = matlab.double(str2array(data['lb']))
+        newdata['lb'] = self.str2matlabArray(data['lb'])
         
-        newdata['ub'] = matlab.double(str2array(data['ub']))
-        newdata['lb-refInput'] = matlab.double(str2array(data['lb-refInput']))
-        newdata['ub-refInput'] = matlab.double(str2array(data['ub-refInput']))
-        newdata['HalfSpace-matrix'] =matlab.double(str2array(data['HalfSpace-matrix']))
-        newdata['HalfSpace-vector'] =matlab.double(str2array(data['HalfSpace-vector']))
+        newdata['ub'] = self.str2matlabArray(data['ub'])
+        newdata['lb-refInput'] = self.str2matlabArray(data['lb-refInput'])
+        newdata['ub-refInput'] = self.str2matlabArray(data['ub-refInput'])
+        newdata['HalfSpace-matrix'] =self.str2matlabArray(data['HalfSpace-matrix'])
+        newdata['HalfSpace-vector'] =self.str2matlabArray(data['HalfSpace-vector'])
 
         if data['reach']==1:
             newdata['reach'] = True

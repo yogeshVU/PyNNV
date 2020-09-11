@@ -59,6 +59,9 @@ class NNCS_DNonLinear:
     def getNNCS(self):
         return self.eng.DLinearNNCS(self.getController(),self.getPlant());
 
+    def str2matlabArray(self,strmat):
+        return self.eng.str2num(strmat)
+
     def setPlant(self,dim,nI,dynamics_func,Ts, outputMat,feedbackMap):
         self.dim =  dim
         self.nI = nI
@@ -108,18 +111,18 @@ class NNCS_DNonLinear:
         newdata['dim'] = data['dim']
         newdata['nI'] = data['nI']
         newdata['dynamic_func'] = data['dynamic_func']
-        newdata['outputMat'] =matlab.double(str2array( data['outputMat'])) 
-        newdata['feedbackMap'] = matlab.double(str2array(data['feedbackMap']))
+        newdata['outputMat'] =self.str2matlabArray( data['outputMat'])
+        newdata['feedbackMap'] = self.str2matlabArray(data['feedbackMap'])
         newdata['Ts'] = data['Ts']
         
         
-        newdata['lb'] = matlab.double(str2array(data['lb']))
+        newdata['lb'] = self.str2matlabArray(data['lb'])
         
-        newdata['ub'] = matlab.double(str2array(data['ub']))
-        newdata['lb-refInput'] = matlab.double(str2array(data['lb-refInput']))
-        newdata['ub-refInput'] = matlab.double(str2array(data['ub-refInput']))
-        newdata['HalfSpace-matrix'] =matlab.double(str2array(data['HalfSpace-matrix']))
-        newdata['HalfSpace-vector'] =matlab.double(str2array(data['HalfSpace-vector']))
+        newdata['ub'] = self.str2matlabArray(data['ub'])
+        newdata['lb-refInput'] = self.str2matlabArray(data['lb-refInput'])
+        newdata['ub-refInput'] = self.str2matlabArray(data['ub-refInput'])
+        newdata['HalfSpace-matrix'] =self.str2matlabArray(data['HalfSpace-matrix'])
+        newdata['HalfSpace-vector'] =self.str2matlabArray(data['HalfSpace-vector'])
 
         if data['reach']==1:
             newdata['reach'] = True

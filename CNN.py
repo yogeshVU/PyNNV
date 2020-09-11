@@ -47,7 +47,9 @@ class CNN:
         print(self.nnfile)
         # print("RefInput")
         # print(self.refInput)
-        
+
+    def str2matlabArray(self,strmat):
+        return self.eng.str2num(strmat)
 
     def parseJson(self,jsonfile):
         print("parsing file:",jsonfile)
@@ -57,9 +59,11 @@ class CNN:
 
         newdata ={}
         
-        newdata['mean'] =matlab.double(str2array(data['mean']))
-        newdata['std'] =matlab.double(str2array(data['std']))
-        
+        # newdata['mean'] =matlab.double(str2array(data['mean']))
+        # newdata['std'] =matlab.double(str2array(data['std']))
+
+        newdata['mean'] = matlab.double(self.str2matlabArray(data['mean']))
+        newdata['std'] = matlab.double(self.str2matlabArray(data['std']))
 
         self.mean = newdata['mean']
         self.std = newdata['std']
