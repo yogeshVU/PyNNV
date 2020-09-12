@@ -146,9 +146,9 @@ template_NN_param[template_NN_NNCS_DiscreteNonLinear_key] = template_NNCS_NonLin
 
 
 template_parameter_file_name = "template_parameters.json"
-output_directory_name = "/home/ubuntu/yogesh/outputs/"
-lec_model_file_name = "input_model.mat"
+output_directory_name = "/home/ubuntu/yogesh/nnv_data/inputs/"
+upload_artifact_directory = "/home/ubuntu/yogesh/nnv_data/"
+
 valid_meta_type_name_set = {
     "ExperimentIndex",
-
 }
