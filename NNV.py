@@ -166,7 +166,7 @@ if __name__ == "__main__":
     eng = matlab.engine.start_matlab()
 
     # strategy = NNVKeys.template_NN_CNN_key
-    strategy = NNVKeys.template_NN_FFNN_key
+    # strategy = NNVKeys.template_NN_FFNN_key
     print("The current strategy is:", strategy)
 
     if strategy == NNVKeys.template_NN_CNN_key:
@@ -193,13 +193,17 @@ if __name__ == "__main__":
     eng.addpath(*matlab_function_path_list)
     NNV_PATH = str(Path(config['MATLAB']['NNV_PATH']))
     eng.addpath(eng.genpath(NNV_PATH))
+
+    INPUT_DIR_PATH = str(Path(config['JOB_INPUT']['INPUT_DIRECTORY']))
+    eng.cd(INPUT_DIR_PATH)
+
     # For CNN we need to have the imagefile and the controller mat-file
     # jsonfile = Path("./input/CNN/inputJson.json")
     # eng.cd(str(Path("./input/CNN")))
 
     # FNN
-    jsonfile = Path("./input/FFNN/inputJson.json")
-    eng.cd(str(Path("./input/FFNN")))
+    # jsonfile = Path("./input/FFNN/inputJson.json")
+    # eng.cd(str(Path("./input/FFNN")))
 
     # ContinuousLinearNNCS
     # jsonfile = Path("./input/ContinuousLinearNNCS/inputJson.json")

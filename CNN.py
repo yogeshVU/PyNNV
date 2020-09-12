@@ -77,7 +77,8 @@ class CNN:
         self.method = data['reach-method']
 
     def getnnfile(self):
-        filePath=  Path(Path(__file__).absolute().parent, "templates","CNN",self.nnfile)
+        # filePath=  Path(Path(__file__).absolute().parent, "templates","CNN",self.nnfile)
+        filePath = Path(self.nnfile)
         # mat_file_list = sorted(network_directory_path.glob("*.mat"))
         # print(mat_file_list)
         # if len(mat_file_list) == 0:
@@ -91,8 +92,8 @@ class CNN:
 
     def getimage(self):
          
-        filepath=  Path(Path(__file__).absolute().parent, "templates","CNN",self.image)
-
+        # filepath=  Path(Path(__file__).absolute().parent, "templates","CNN",self.image)
+        filepath = Path(self.image)
         return str(filepath)
 
     def invokeattack(self):
