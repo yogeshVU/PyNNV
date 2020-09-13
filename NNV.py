@@ -141,8 +141,8 @@ class ConcreteStrategyB(Strategy):
 
 class NNVExec:
     # obj = NNVExec(jsonfile, INPUT_DIR_PATH, config_file)
-    def __init__(self, parameter_json, input_dir_path, config_file='config.ini'):
-
+    def __init__(self, parameter_json, input_dir_path, config_file='/home/ubuntu/yogesh/python-tut/config.ini'):
+        print('config file',config_file)
         config = configparser.ConfigParser()
         config.read(config_file)
         jsonfile = parameter_json
