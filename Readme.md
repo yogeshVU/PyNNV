@@ -1,7 +1,7 @@
 NNV Python Wrapper
 ===
 
-authors: Yogesh B., Harmon N.
+authors: Yogesh B., Harmon N., Diego M.
 
 Usage:
 --
