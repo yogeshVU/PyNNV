@@ -149,7 +149,11 @@ class NNVExec:
         with open(jsonfile) as f:
             data = json.load(f)
 
+
+
+
         strategy = data['NNType']
+        
         # eng = matlab.engine.start_matlab('-nojvm')
         eng = matlab.engine.start_matlab()
         # This is the input directory generated from the webgme path
@@ -177,10 +181,25 @@ class NNVExec:
         elif strategy == NNVKeys.template_NN_NNCS_ContinuousLinear_key:
             context = NNCS_Linear(eng)
         elif strategy == NNVKeys.template_NN_NNCS_ContinuousNonLinear_key:
+            func_file_name = Path(input_dir_path,str(data['dynamic_func'] + ".m"))
+            print(func_file_name)
+            with func_file_name.open("w", encoding="utf-8") as file_fp:
+                try:
+                    file_fp.write(data['file'])
+                except Exception as err1:
+                    print(err1)
+
             context = NNCS_NonLinear(eng)
         elif strategy == NNVKeys.template_NN_NNCS_DiscreteLinear_key:
             context = NNCS_Dlinear(eng)
         elif strategy == NNVKeys.template_NN_NNCS_DiscreteNonLinear_key:
+            func_file_name = Path(input_dir_path,str(data['dynamic_func'] + ".m"))
+            print(func_file_name)
+            with func_file_name.open("w", encoding="utf-8") as file_fp:
+                try:
+                    file_fp.write(data['file'])
+                except Exception as err1:
+                    print(err1)
             context = NNCS_DNonLinear(eng)
         else:
             print("Invalid NNType... Handler Missing for: ", strategy)
