@@ -111,3 +111,13 @@ FUNCTION_PATHS =/home/ubuntu/yogesh/python-tut/input/CNN
 
 ```
 
+Misc.
+--
+To install the matlab python package:
+
+``` bash
+cd "matlabroot\extern\engines\python"
+
+python setup.py build --build-base=$(mktemp -d) install --prefix pynnv/venv/
+```
+
