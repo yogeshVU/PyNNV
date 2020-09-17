@@ -1,4 +1,7 @@
+import configparser
 import json
+from os.path import expandvars
+
 import matlab
 import matlab.engine
 from pathlib import Path
@@ -170,27 +173,33 @@ class NNCS_DNonLinear:
         return result    
 
 def main():
-        
 
-    # START MATLAB ENGINE
-    # eng = matlab.engine.start_matlab()
-    eng = matlab.engine.start_matlab('-nojvm')
-
-
-    # ADD PATHS OF NEEDED FUNCTIONS TO MATLAB ENVIRONMENT
-    matlab_function_path_list = []
-
-    #
-    # EXECUTE MATLAB ENGINE
-    #
-    # eng.addpath(*matlab_function_path_list)
-    eng.addpath(eng.genpath('/home/ubuntu/yogesh/aatools/diego-nnv/nnv/code/nnv'))
-
-
-
-    
-    eng.cd(str(Path(Path(__file__).absolute().parent, "templates/NNCS/DNonlinear")),nargout=0)
+    ## Todo: need to add examples_inputs for this..
     jsonfile = Path(Path(__file__).absolute().parent, "templates","NNCS","DNonlinear",'inputJson.json')
+    input_dir_path = Path(Path(__file__).absolute().parent, "templates/NNCS/DNonlinear")
+    config_file = 'config.ini'
+
+    config = configparser.ConfigParser()
+    config.read(config_file)
+
+    with open(jsonfile) as f:
+        data = json.load(f)
+
+    eng = matlab.engine.start_matlab()
+    matlab_function_path_list = []
+    for paths in config['MATLAB']['FUNCTION_PATHS'].split("\n"):
+        print(expandvars(paths))
+        matlab_function_path_list.append(str(expandvars(paths)))
+
+    eng.addpath(*matlab_function_path_list)
+
+    ## Add the NNV path...
+    NNV_PATH = str(Path(config['MATLAB']['NNV_PATH']))
+    eng.addpath(eng.genpath(NNV_PATH))
+
+    eng.cd(str(input_dir_path))
+
+
     simObj = NNCS_DNonLinear(eng)
     simObj.parseJson(str(jsonfile))
     print(simObj.compute())

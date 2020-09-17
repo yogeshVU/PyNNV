@@ -1,4 +1,7 @@
+import configparser
 import json
+from os.path import expandvars
+
 import matlab
 import matlab.engine
 from pathlib import Path
@@ -177,50 +180,33 @@ class NNCS_Dlinear:
         return result
 
 def main():
-        
 
-    # START MATLAB ENGINE
-    # eng = matlab.engine.start_matlab()
-    eng = matlab.engine.start_matlab('-nojvm')
+    jsonfile = Path(Path(__file__).absolute().parent, "example_inputs", "DiscreteLinearNNCS", "template_parameters.json")
+    input_dir_path = Path(Path(__file__).absolute().parent, "example_inputs", "DiscreteLinearNNCS")
+    config_file = 'config.ini'
 
+    config = configparser.ConfigParser()
+    config.read(config_file)
 
-    # ADD PATHS OF NEEDED FUNCTIONS TO MATLAB ENVIRONMENT
+    with open(jsonfile) as f:
+        data = json.load(f)
+
+    eng = matlab.engine.start_matlab()
     matlab_function_path_list = []
-    local_matlab_function_path = str(Path(Path(__file__).absolute().parent, "templates/CNN/Brightening"))
-    matlab_function_path_list.append(local_matlab_function_path)
-    local_matlab_function_path = str(Path(Path(__file__).absolute().parent, "templates/CNN/Darkening"))
-    matlab_function_path_list.append(local_matlab_function_path)
-    local_matlab_function_path = str(Path(Path(__file__).absolute().parent, "templates/CNN/RandomNoise"))
-    matlab_function_path_list.append(local_matlab_function_path)
+    for paths in config['MATLAB']['FUNCTION_PATHS'].split("\n"):
+        print(expandvars(paths))
+        matlab_function_path_list.append(str(expandvars(paths)))
 
-    # image_path = str(Path(Path(__file__).absolute().parent, "templates/CNN/image40.png"))
+    eng.addpath(*matlab_function_path_list)
 
-    #
-    # EXECUTE MATLAB ENGINE
-    #
-    # eng.addpath(*matlab_function_path_list)
-    eng.addpath(eng.genpath('/home/ubuntu/yogesh/aatools/diego-nnv/nnv/code/nnv'))
-    
-    meanV, stdV, reach_method  = (matlab.double([0.4914, 0.4822, 0.4465]) , matlab.double([0.2023, 0.1994, 0.2010]) , 'approx-star')
-    # eng.cd(str(Path(Path(__file__).absolute().parent, "templates/CNN/Brightening")),nargout=0)
-    image_path = str(Path(Path(__file__).absolute().parent, "templates","CNN", 'image40.png').absolute())
-    # print(mat_file)
-    print(image_path)
-    network_directory_path = Path(Path(__file__).absolute().parent, "templates","CNN")
-    mat_file_list = sorted(network_directory_path.glob("*.mat"))
-    print(mat_file_list)
+    ## Add the NNV path...
+    NNV_PATH = str(Path(config['MATLAB']['NNV_PATH']))
+    eng.addpath(eng.genpath(NNV_PATH))
 
-    if len(mat_file_list) == 0:
-        raise RuntimeError(
-        "lec directory \"{0}\" must contain at least one mat-file"
-        " (that contains a neural network).".format(network_directory_path))
-    mat_file = mat_file_list[0].absolute()
-    pixels =100
+    eng.cd(str(input_dir_path))
 
-    
-    eng.cd(str(Path(Path(__file__).absolute().parent, "templates/NNCS/DLinear")),nargout=0)
-    jsonfile = Path(Path(__file__).absolute().parent, "templates","NNCS","DLinear",'inputJson.json')
-    # print(jsonfile)
+
+
     simObj = NNCS_Dlinear(eng)
     simObj.parseJson(str(jsonfile))
     print(simObj.compute())
@@ -234,11 +220,11 @@ def main():
     # if simObj.doVerify():
     #     result = simObj.invokeVerifier()
 
-        # simObj.execute()
+    # simObj.execute()
     # except Exception as e:
-    #     print(e)    
+    #     print(e)
     # finally:
-    #     print("Finally..")    
+    #     print("Finally..")
     #     eng.exit()
     eng.exit()
 

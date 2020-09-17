@@ -1,5 +1,7 @@
-
+import configparser
 import json
+from os.path import expandvars
+
 import matlab
 import matlab.engine
 from pathlib import Path
@@ -114,30 +116,35 @@ class CNN:
     
     
 def main():
-        
 
-    # START MATLAB ENGINE
+    jsonfile = Path(Path(__file__).absolute().parent, "example_inputs", "CNN","template_parameters.json")
+    input_dir_path = Path(Path(__file__).absolute().parent, "example_inputs", "CNN")
+    config_file = 'config.ini'
+
+    config = configparser.ConfigParser()
+    config.read(config_file)
+
+    with open(jsonfile) as f:
+        data = json.load(f)
+
     eng = matlab.engine.start_matlab()
-    # eng = matlab.engine.start_matlab('-nojvm')
-
-
-    # ADD PATHS OF NEEDED FUNCTIONS TO MATLAB ENVIRONMENT
     matlab_function_path_list = []
-    local_matlab_function_path = str(Path(Path(__file__).absolute().parent, "templates/CNN/Brightening"))
-
-    matlab_function_path_list.append(local_matlab_function_path)
-
-    local_matlab_function_path = str(Path(Path(__file__).absolute().parent, "templates/CNN/Darkening"))
-    matlab_function_path_list.append(local_matlab_function_path)
-
-    local_matlab_function_path = str(Path(Path(__file__).absolute().parent, "templates/CNN/RandomNoise"))
-    matlab_function_path_list.append(local_matlab_function_path)
-
+    for paths in config['MATLAB']['FUNCTION_PATHS'].split("\n"):
+        print(expandvars(paths))
+        matlab_function_path_list.append(str(expandvars(paths)))
 
     eng.addpath(*matlab_function_path_list)
-    eng.addpath(eng.genpath('/home/ubuntu/yogesh/aatools/diego-nnv/nnv/code/nnv'))
-    eng.cd(str(Path(Path(__file__).absolute().parent, "templates/CNN")),nargout=0)
-    jsonfile = Path(Path(__file__).absolute().parent, "templates","CNN",'inputJson.json')
+
+    ## Add the NNV path...
+    NNV_PATH = str(Path(config['MATLAB']['NNV_PATH']))
+    eng.addpath(eng.genpath(NNV_PATH))
+
+    eng.cd(str(input_dir_path))
+
+
+###--------
+
+
     simObj = CNN(eng)
     simObj.parseJson(str(jsonfile))
     simObj.compute()

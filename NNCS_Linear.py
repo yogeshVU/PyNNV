@@ -1,4 +1,7 @@
+import configparser
 import json
+from os.path import expandvars
+
 import matlab
 import matlab.engine
 from pathlib import Path
@@ -193,35 +196,32 @@ class NNCS_Linear:
 
 
 def main():
-        
 
-    # START MATLAB ENGINE
+    ## TODO: add examples_inputs
+    input_dir_path = Path(Path(__file__).absolute().parent, "templates/NNCS/Linear")
+    jsonfile = Path(Path(__file__).absolute().parent, "templates","NNCS","Linear",'inputJson.json')
+    config_file = 'config.ini'
+    config = configparser.ConfigParser()
+
+    config.read(config_file)
+
+    with open(jsonfile) as f:
+        data = json.load(f)
+
     eng = matlab.engine.start_matlab()
-    # eng = matlab.engine.start_matlab('-nojvm')
-
-
-    # ADD PATHS OF NEEDED FUNCTIONS TO MATLAB ENVIRONMENT
     matlab_function_path_list = []
+    for paths in config['MATLAB']['FUNCTION_PATHS'].split("\n"):
+        print(expandvars(paths))
+        matlab_function_path_list.append(str(expandvars(paths)))
 
-    # image_path = str(Path(Path(__file__).absolute().parent, "templates/CNN/image40.png"))
-
-    #
-    # EXECUTE MATLAB ENGINE
-    #
-    # eng.addpath(*matlab_function_path_list)
-    eng.addpath(eng.genpath('/home/ubuntu/yogesh/aatools/diego-nnv/nnv/code/nnv'))
-    matlab_function_path_list = []
-    matlab_function_path_list.append(str(Path(Path(__file__).absolute().parent, "templates/NNCS/Linear")))
-    
-    matlab_function_path_list.append(str(Path(Path(__file__).absolute().parent,"templates")))
-    
     eng.addpath(*matlab_function_path_list)
 
+    ## Add the NNV path...
+    NNV_PATH = str(Path(config['MATLAB']['NNV_PATH']))
+    eng.addpath(eng.genpath(NNV_PATH))
 
+    eng.cd(str(input_dir_path))
 
-    
-    eng.cd(str(Path(Path(__file__).absolute().parent, "templates/NNCS/Linear")),nargout=0)
-    jsonfile = Path(Path(__file__).absolute().parent, "templates","NNCS","Linear",'inputJson.json')
     # print(jsonfile)
     simObj = NNCS_Linear(eng)
     simObj.parseJson(str(jsonfile))
