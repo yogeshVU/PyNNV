@@ -113,6 +113,11 @@ FUNCTION_PATHS =/home/ubuntu/yogesh/python-tut/input/CNN
 
 Misc.
 --
+* Install the python dependencies in a virtualenv from the `requirements.txt`
+example:
+```bash
+python3.7 -m virtualenv venv
+```
 To install the matlab python package:
 
 ``` bash
