@@ -11,6 +11,56 @@ To run the NNV Python Wrapper:
 python  NNVEntry.py [-h] --json JSON --inputdir INPUTDIR [--config CONFIG]
 ```
 
+Example:
+
+```bash
+(venv) ubuntu@localhost:~/yogesh/python-tut$ python NNVEntry.py --json /home/ubuntu/yogesh/python-tut/example_inputs/CNN/template_parameters.json  --inputdir /home/ubuntu/yogesh/python-tut/example_inputs/CNN
+/home/ubuntu/yogesh/python-tut/example_inputs/CNN/template_parameters.json
+None
+/home/ubuntu/yogesh/python-tut/example_inputs/CNN
+config file /home/ubuntu/yogesh/python-tut/config.ini
+/home/ubuntu/yogesh/python-tut/input/CNN
+/home/ubuntu/yogesh/python-tut/input/FFNN
+/home/ubuntu/yogesh/python-tut/input/DiscreteNonLinearNNCS
+/home/ubuntu/yogesh/python-tut/input/DiscreteLinearNNCS
+/home/ubuntu/yogesh/python-tut/input/ContinuousLinearNNCS
+/home/ubuntu/yogesh/python-tut/input/ContinuousNonLinearNNCS
+The current strategy is: CNN
+parsing file: /home/ubuntu/yogesh/python-tut/example_inputs/CNN/template_parameters.json
+image40.png
+vgg16nnv.mat
+
+net = 
+
+  struct with fields:
+
+    nn: [1x1 CNN]
+
+
+std =
+
+    0.2023    0.1994    0.2010
+
+
+mean =
+
+    0.4914    0.4822    0.4465
+
+
+=============================================Starting parallel pool (parpool) using the 'local' profile ...
+Connected to the parallel pool (number of workers: 16).
+
+=============================================
+The robustness of the network is UNCERTAIN due to the conservativeness of approximate analysis
+Label index: 0
+Possible classified index: 6 
+Please try to verify the robustness with exact-star (exact analysis) option 
+Robusteness analysis total time = 64.0123
+Robust = 2
+2.0
+
+```
+
 Parameter **JSON** file: 
 
 ```json
