@@ -1,0 +1,15 @@
+{
+    "NNType": "CNN",
+    "attack": "randomnoise",
+    "delta": 0.01,
+    "im_target": 0,
+    "image": "image40.png",
+    "mean": "[0.4914 0.4822 0.4465]",
+    "name": "nnvdesign_1",
+    "nnfile": "vgg16nnv.mat",
+    "owner": "guest",
+    "pixels": 0,
+    "reach-method": "approx-star",
+    "std": "[0.2023 0.1994 0.2010]",
+    "threshold": 245
+}
