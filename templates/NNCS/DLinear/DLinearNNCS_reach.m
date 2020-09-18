@@ -28,6 +28,7 @@ function [R, reachTime] = DLinearNNCS_reach(NN_path,A,B,C,D,Ts,lb,ub,num_of_step
     disp(reachTime)
     disp(R)
     disp('Finished reachability')
+    save('starset.mat','R','-v7.3')
 
     end
     

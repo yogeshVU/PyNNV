@@ -37,6 +37,7 @@ function [R, reachTime] = DNonLinear_reach(NN_path,dynamics_func,dim,nI,Ts,outpu
     [R,reachTime] = nncs.reach(reachPRM); % Execute reachability analysis
     
     disp(R)
+    save('starset.mat','R','-v7.3')
 
     end
 

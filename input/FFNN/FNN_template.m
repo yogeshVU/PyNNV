@@ -71,7 +71,8 @@ elseif strcmp(procedure,'reach')
     result.reachSet = S;
     result.t = t;
     disp(result.reachSet)
-    
+    save('starset.mat','S','-v7.3')
+
 else
     error('Unknown procedure for the verification of feed-forward neural networks')
 end

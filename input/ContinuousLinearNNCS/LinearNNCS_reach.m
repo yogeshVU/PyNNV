@@ -31,5 +31,6 @@ function [R,reachTime] = LinearNNCS_reach(NN_path,A,B,C,D,controlPeriod,numReach
     
     disp(R)
     disp(reachTime)
+    save('starset.mat','R','-v7.3')
 
     end

@@ -162,7 +162,12 @@ def main():
 
     simObj = FFNN(eng)
     simObj.parseJson(str(jsonfile))
-    print(simObj.compute())
+    # print(simObj.compute())
+    result = simObj.compute()
+    print(result)
+    Strs = eng.getfield(result['reachability'], 'reachSet')
+    print(Strs)
+
     # if simObj.doReach():
     #     result = simObj.invokeReachibility()
 
