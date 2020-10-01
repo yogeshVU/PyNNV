@@ -139,7 +139,7 @@ def main():
     input_dir_path = Path(Path(__file__).absolute().parent, "example_inputs", "FFNN")
     config_file = 'config.ini'
 
-    config = configparser.ConfigParser()
+    config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
     config.read(config_file)
 
     with open(jsonfile) as f:

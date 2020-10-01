@@ -201,7 +201,7 @@ def main():
     input_dir_path = Path(Path(__file__).absolute().parent, "templates/NNCS/Linear")
     jsonfile = Path(Path(__file__).absolute().parent, "templates","NNCS","Linear",'inputJson.json')
     config_file = 'config.ini'
-    config = configparser.ConfigParser()
+    config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
 
     config.read(config_file)
 

@@ -9,7 +9,7 @@ class NNVExec:
     # obj = NNVExec(jsonfile, INPUT_DIR_PATH, config_file)
     def __init__(self, parameter_json, input_dir_path, config_file='config.ini'):
         print('config file',config_file)
-        config = configparser.ConfigParser()
+        config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
         config.read(config_file)
         jsonfile = parameter_json
         with open(jsonfile) as f:

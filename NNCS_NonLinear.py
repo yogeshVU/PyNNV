@@ -186,7 +186,7 @@ def main():
     jsonfile = Path(Path(__file__).absolute().parent, "templates","NNCS","Nonlinear",'inputJson.json')
     config_file = 'config.ini'
 
-    config = configparser.ConfigParser()
+    config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
     config.read(config_file)
 
     with open(jsonfile) as f:
