@@ -126,3 +126,27 @@ cd "matlabroot\extern\engines\python"
 python setup.py build --build-base=$(mktemp -d) install --prefix pynnv/venv/
 ```
 
+
+Creating a docker container for this:
+For the current dockerfile, we have used MATLAB2020a as the host machine version of the MATLAB.
+
+We can set the path of the matlab host installation as :
+`MATLAB_PATH=/usr/local/MATLAB/R2020a/
+`
+Next, create the docker container(the process is going to take a long time(~30min..)) depending on the internet connection.
+It first downloads the verivital/nnv from the git repo., create the matlab container,
+installs the matlab python and finally installs the PyNNV and the file path setup.
+ 
+To build run:
+``
+sh run_setup.sh
+``
+
+To execute the pynnv container:
+Important point here is that we need to have the `network=host` to be able to ran the matlab from the container.
+
+```
+MATLAB_PATH=/usr/local/MATLAB/R2020a/; docker run --rm  -it --network=host -v $MATLAB_PATH:$MATLAB_PATH:ro pynnv:0.1.0 /bin/bash
+```
+
+
