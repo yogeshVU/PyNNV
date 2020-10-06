@@ -27,9 +27,11 @@ RUN apt update && apt install -y protobuf-compiler cmake
 # This creates a setup_verivital.m
 RUN echo "cd /verivital/nnv/code/nnv \n try \n   install \n catch \n   disp('Exception caught!') \n end \n cd /verivital/nnv/code/nnv \n startup_nnv \n cd /verivital \n savepath('/verivital/pathdef.m')" > /verivital/setup_verivital.m
 RUN mkdir -p /PyNNV
+#RUN pip install -r requirements.txt
+RUN pip install -r https://raw.githubusercontent.com/yogeshVU/PyNNV/master/requirements.txt
+RUN apt-get install libjpeg-dev -y
 WORKDIR /PyNNV
 COPY . /PyNNV
-RUN pip install -r requirements.txt
 RUN chmod +x matlab-requirements.sh
 
 

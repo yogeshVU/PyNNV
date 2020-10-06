@@ -1,0 +1,23 @@
+{
+    "A": "[0 1 0 0 0 0 0; 0 0 1 0 0 0 0; 0 0 0 0 0 0 1; 0 0 0 0 1 0 0; 0 0 0 0 0 1 0; 0 0 0 0 0 -2 0; 0 0 -2 0 0 0 0]",
+    "B": "[0; 0; 0; 0; 0; 2; 0]",
+    "C": "[1 0 0 -1 0 0 0; 0 1 0 0 -1 0 0; 0 0 0 0 1 0 0]",
+    "D": "[0; 0; 0]",
+    "HalfSpace-matrix": "[1 0 0 -1 -1.4 0 0]",
+    "HalfSpace-vector": "[10]",
+    "NNType": "ContinuousLinearNNCS",
+    "Ts": 0.1,
+    "cores": 1,
+    "lb": "[90;29;0;30;30;0;-10]",
+    "lb-refInput": "[30;1.4]",
+    "name": "nnvdesign_1",
+    "nnfile": "controller_test.mat",
+    "owner": "guest",
+    "reach": true,
+    "reach-method": "approx-star",
+    "reachable-steps": 5,
+    "steps": 1,
+    "ub": "[92.0;30.0;0;31.0;30.2;0;-10.0]",
+    "ub-refInput": "[30;1.4]",
+    "verify": true
+}
