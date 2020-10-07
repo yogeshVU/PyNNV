@@ -1,38 +1,59 @@
-FROM python:3.7.9-slim-buster as nnv_base
+FROM python:3.7.9-slim-buster as matlab_base_R2020a
 ENV DEBIAN_FRONTEND=noninteractive
-WORKDIR /
-RUN apt update
-#RUN apt install software-properties-common -y
-#RUN add-apt-repository ppa:deadsnakes/ppa -y
-#RUN apt install python3.7 -y
-RUN apt install git-core -y
-RUN mkdir -p /verivital
-WORKDIR /verivital
-RUN cd /verivital && git clone https://github.com/verivital/nnv .
-RUN cd /verivital && git clone --recursive https://github.com/verivital/nnv.git
-
-FROM nnv_base as matlab_base_R2020a
+RUN apt-get update && apt-get install -y \
+    libpng-dev libfreetype6-dev \
+    libblas-dev liblapack-dev gfortran build-essential xorg protobuf-compiler cmake libjpeg-dev && apt-get clean \
+    && apt-get -y autoremove \
+    && rm -rf /var/lib/apt/lists/*
 ARG MATLAB_PATH=/usr/local/MATLAB/R2020a
 ENV MATLAB_PATH=$MATLAB_PATH
 WORKDIR $MATLAB_PATH
-RUN apt-get update && apt-get install -y \
-    libpng-dev libfreetype6-dev \
-    libblas-dev liblapack-dev gfortran build-essential xorg && apt-get clean \
-    && apt-get -y autoremove \
-    && rm -rf /var/lib/apt/lists/*
 ENV PATH="/usr/bin:${MATLAB_PATH}/bin:${PATH}"
 
-FROM matlab_base_R2020a as pynnv_base
-RUN apt update && apt install -y protobuf-compiler cmake
+FROM matlab_base_R2020a as nnv_base
+ENV DEBIAN_FRONTEND=noninteractive
+WORKDIR /
+#RUN apt install software-properties-common -y
+#RUN add-apt-repository ppa:deadsnakes/ppa -y
+#RUN apt install python3.7 -y
+RUN apt update && apt install git-core wget  -y \
+ && apt-get -y autoremove \
+    && rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /verivital
+WORKDIR /verivital
+
+ARG NNV_REPO=https://github.com/dieman95/nnv
+ARG BRANCH=cora2020
+ARG COMMIT_HASH=6497e82694ef52741bfd1396330367bbe3870808
+RUN echo $NNV_REPO $BRANCH $COMMIT_HASH
+RUN git clone --branch ${BRANCH} $NNV_REPO . \
+&& git checkout ${COMMIT_HASH} \
+&& git reset --hard
+#RUN git clone --branch cora2020 https://github.com/dieman95/nnv . \
+#&& git checkout 6497e82694ef52741bfd1396330367bbe3870808 \
+#&& git reset --hard
+
+
+#RUN cd /verivital && git clone https://github.com/verivital/nnv .
+#RUN cd /verivital && git clone --recursive https://github.com/verivital/nnv.git
+#RUN cd /verivital && git clone https://github.com/verivital/nnv .
+RUN cd /verivital && git submodule init && git submodule sync && git submodule update
+RUN echo "cd /verivital/code/nnv \n try \n   install \n catch \n   disp('Exception caught!') \n end \n cd /verivital/code/nnv \n startup_nnv \n cd /verivital \n savepath('/verivital/pathdef.m')" > /verivital/setup_verivital.m
+RUN cd /verivital && wget https://raw.githubusercontent.com/yogeshVU/PyNNV/master/matlab-requirements.sh && chmod +x matlab-requirements.sh
+
+
+FROM nnv_base:0.1.1 as pynnv_base
 # This creates a setup_verivital.m
-RUN echo "cd /verivital/nnv/code/nnv \n try \n   install \n catch \n   disp('Exception caught!') \n end \n cd /verivital/nnv/code/nnv \n startup_nnv \n cd /verivital \n savepath('/verivital/pathdef.m')" > /verivital/setup_verivital.m
 RUN mkdir -p /PyNNV
 #RUN pip install -r requirements.txt
 RUN pip install -r https://raw.githubusercontent.com/yogeshVU/PyNNV/master/requirements.txt
-RUN apt-get install libjpeg-dev -y
+RUN wget -q http://mirrors.kernel.org/ubuntu/pool/main/libj/libjpeg-turbo/libjpeg-turbo8_2.0.3-0ubuntu1_amd64.deb \
+&& apt-get -qy --allow-downgrades install ./libjpeg-turbo8_2.0.3-0ubuntu1_amd64.deb \
+&& rm libjpeg-turbo8_2.0.3-0ubuntu1_amd64.deb
+
 WORKDIR /PyNNV
 COPY . /PyNNV
-RUN chmod +x matlab-requirements.sh
+#RUN chmod +x matlab-requirements.sh
 
 
 #COPY . /PyNNV

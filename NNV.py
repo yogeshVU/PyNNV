@@ -49,6 +49,7 @@ class NNVExec:
             with func_file_name.open("w", encoding="utf-8") as file_fp:
                 try:
                     file_fp.write(data['file'])
+                    file_fp.close()
                 except Exception as err1:
                     print(err1)
 

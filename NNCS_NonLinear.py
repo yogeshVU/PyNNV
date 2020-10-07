@@ -184,6 +184,8 @@ def main():
     ## TODO: add from example_inputs
     input_dir_path = Path(Path(__file__).absolute().parent, "templates/NNCS/Nonlinear")
     jsonfile = Path(Path(__file__).absolute().parent, "templates","NNCS","Nonlinear",'inputJson.json')
+
+
     config_file = 'config.ini'
 
     config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())

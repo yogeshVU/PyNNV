@@ -7,7 +7,7 @@
     "dim": 6,
     "dynamic_func": "test_dynamics",
     "feedbackMap": "[0]",
-    "file": "function [dx]=test_dynamics(t,x, a_ego)\n\nmu=0.0001; % friction parameter\n\n% x1 = lead_car position\n% x2 = lead_car velocity\n% x3 = lead_car internal state\n\n% x4 = ego_car position\n% x5 = ego_car velocity\n% x6 = ego_car internal state\n\n% u = a_ego: control input\n\n% lead car dynamics\na_lead = -2; \ndx(1,1)=x(2);\ndx(2,1) = x(3);\ndx(3,1) = -2 * x(3) + 2 * a_lead - mu*x(2)^2;\n% ego car dyanmics\ndx(4,1)= x(5); \ndx(5,1) = x(6);\ndx(6,1) = -2 * x(6) + 2 * a_ego - mu*x(5)^2;\nend\n",
+    "file": "function [dx]=test_dynamics(x, a_ego)\n\nmu=0.0001; % friction parameter\n\n% x1 = lead_car position\n% x2 = lead_car velocity\n% x3 = lead_car internal state\n\n% x4 = ego_car position\n% x5 = ego_car velocity\n% x6 = ego_car internal state\n\n% u = a_ego: control input\n\n% lead car dynamics\na_lead = -2;\ndx(1,1)=x(2);\ndx(2,1) = x(3);\ndx(3,1) = -2 * x(3) + 2 * a_lead - mu*x(2)^2;\n% ego car dyanmics\ndx(4,1)= x(5);\ndx(5,1) = x(6);\ndx(6,1) = -2 * x(6) + 2 * a_ego - mu*x(5)^2;\nend\n",
     "lb": "[90;29;0;30;30;0]",
     "lb-refInput": "[30;1.4]",
     "nI": 1,
