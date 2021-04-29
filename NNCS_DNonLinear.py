@@ -49,6 +49,9 @@ class NNCS_DNonLinear:
         self.verify = False
         self.reach = False
 
+        self.plotmethod = ""
+        self.plotdim = []
+
     def setController(self,nnfile):
         self.nnfile = nnfile #Path of the NN file
 
@@ -142,13 +145,32 @@ class NNCS_DNonLinear:
         self.parseReachParam(lb=newdata['lb'],ub=newdata['ub'], numSteps=data['steps'],reachMethod=data['reach-method'],
                             numCores=data['cores'],lbRef=newdata['lb-refInput'],ubRef=newdata['ub-refInput'], halfSpaceMatrix= newdata['HalfSpace-matrix'], halfSpaceVector= newdata['HalfSpace-vector'], doReachability=newdata['reach'],doVerify=newdata['verify'])
 
+        self.parsePlotInfo(data)
+
+    def parsePlotInfo(self, data):
+
+        # if data['reach']==1 and data['plotConfig']:
+        #     self.plotmethod = data['plotConfig']['method']
+        #     for i in range(len(data['plotConfig']['options'])):
+        #         print("i==",i)
+        #         self.plotdim.append( data['plotConfig']['options']['dim'+str(i+1)])
+
+        if data['reach'] == 1 and data['plotmethod']:
+            self.plotmethod = data['plotmethod']
+            self.plotdim.append(data['plot_xdim'])
+            self.plotdim.append(data['plot_ydim'])
+            self.plotdim.append(data['plot_zdim'])
+
+        print(self.plotdim)
+        print("method ==>", self.plotmethod)
+
     def execute(self):
         self.getNNCS()
     
     def invokeReachibility(self):
         # function [R, reachTime] = DNonLinear_reach(NN_path,dynamics_func,dim,nI,Ts,outputMat,feedbackMap,lb,ub,num_of_steps,reachMethod,lb_ref,ub_ref)
         # %% [r,rt] = DNonLinear_reach('controller_test.mat',@test_dynamicsD,6,1,0.2,[0 0 0 0 1 0;1 0 0 -1 0 0; 0 1 0 0 -1 0],[0],[90;29;0;30;30;0], [92;30;0;31;30.2;0], 5, 'approx-star',[30;1.4],[30;1.4]);
-        return self.eng.DNonLinear_reach(self.nnfile,self.dynamics_func,self.dim,self.nI,self.Ts,self.outputMat,self.feedbackMap, self.lb,self.ub,self.steps,self.reach_method,self.lbRefInput,self.ubRefInput)
+        return self.eng.DNonLinear_reach(self.nnfile,self.dynamics_func,self.dim,self.nI,self.Ts,self.outputMat,self.feedbackMap, self.lb,self.ub,self.steps,self.reach_method,self.lbRefInput,self.ubRefInput,nargout = 2)
 
     def invokeVerifier(self):
         # function [safe, counterExamples, verifyTime] = DNonLinear_verify(NN_path,dynamics_func,dim,nI,Ts,outputMat,feedbackMap,lb,ub,num_of_steps,reachMethod,ref_input,G,g)
@@ -167,10 +189,42 @@ class NNCS_DNonLinear:
         result = {}
         if self.doReach():
             result['reachability'] = self.invokeReachibility()
+            # R, rT = simObj.invokeReachibility()
+            # simObj.plotReachSet(R)
+            # result['reachability'] = self.invokeReachibility()
+            R, rT = result['reachability']
+
+            self.plotReachSetNew(R)
 
         if self.doVerify():
             result['verification'] = self.invokeVerifier()
-        return result    
+        return result
+
+    def plotReachSet(self, starSet, method='boxes2d', color='r', xdim=1, ydim=2, zdim=None):
+        # - method: choose from ['exact','boxes2d', 'boxes3d', 'ranges', 'nofill']
+        # %      1) color: color for the reach sets (e.g. 'r')
+        # %      2) x-dim: dimension of set to plot in x-axis
+        # %      3) y-dim: dimension of set to plot in y-axis
+        # %      4) z-dim: dimension of set to plot in z-axis (only for 'boxes3d')
+        # R{1},'boxes2d','r',1,2
+        # >> plot_sets(R{1},'boxes2d','r',1,2)
+        # >> plot_sets(R{1},'boxes3d','r',1,2,4)
+        # >> plot_sets(R{1},'nofill','r',1,2)
+        # return self.eng.plot_sets(starSet, method, color, xdim, ydim, zdim, nargout=0)
+        if ydim == 0:
+            return self.eng.plot_sets(starSet, method, color, xdim, nargout=0)
+        elif zdim == 0:
+            return self.eng.plot_sets(starSet, method, color, xdim, ydim, nargout=0)
+        else:
+            return self.eng.plot_sets(starSet, method, color, xdim, ydim, zdim, nargout=0)
+
+    def plotReachSetNew(self, starSet):
+        print("Method is :", self.plotmethod)
+        print("plotdim is: ", self.plotdim)
+        print(self.plotmethod, self.plotdim[0], self.plotdim[1] or None, self.plotdim[2])
+
+        return self.plotReachSet(starSet, method=self.plotmethod, xdim=self.plotdim[0], ydim=self.plotdim[1],
+                                 zdim=self.plotdim[2])
 
 def main():
 

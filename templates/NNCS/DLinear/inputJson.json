@@ -1,23 +1,26 @@
 {
-
-
-    "A" : "[0 1 0 0 0 0 0; 0 0 1 0 0 0 0; 0 0 0 0 0 0 1; 0 0 0 0 1 0 0; 0 0 0 0 0 1 0; 0 0 0 0 0 -2 0; 0 0 -2 0 0 0 0]",
-    "B" : "[0; 0; 0; 0; 0; 2; 0]",
-    "C" : "[1 0 0 -1 0 0 0; 0 1 0 0 -1 0 0; 0 0 0 0 1 0 0]",
-    "D" : "[0; 0; 0]",
-
-
-    "Ts" : 0.2,
-    "nnfile": "controller_test.mat",
-    "lb" : "[90;29;0;30;30;0;-10]",
-    "ub" :"[92.0;30.0;0;31.0;30.2;0;-10.0]",
-    "reach-method": "approx-star",
-    "cores": 1,
-    "steps": 5,
-    "lb-refInput": "[30;1.4]",
-    "ub-refInput": "[30;1.4]",
+    "A": "[0 1 0 0 0 0 0; 0 0 1 0 0 0 0; 0 0 0 0 0 0 1; 0 0 0 0 1 0 0; 0 0 0 0 0 1 0; 0 0 0 0 0 -2 0; 0 0 -2 0 0 0 0]",
+    "B": "[0; 0; 0; 0; 0; 2; 0]",
+    "C": "[1 0 0 -1 0 0 0; 0 1 0 0 -1 0 0; 0 0 0 0 1 0 0]",
+    "D": "[0; 0; 0]",
     "HalfSpace-matrix": "[1 0 0 -1 -1.4 0 0]",
-    "HalfSpace-vector": "10",
-    "verify":1,
-    "reach":1
+    "HalfSpace-vector": "[10]",
+    "NNType": "DiscreteLinearNNCS",
+    "Ts": 0.1,
+    "cores": 1,
+    "lb": "[90;29;0;30;30;0;-10]",
+    "lb-refInput": "[30;1.4]",
+    "name": "nnvplot1",
+    "nnfile": "controller_test.mat",
+    "owner": "guest",
+    "plot_xdim": 1,
+    "plot_ydim": 2,
+    "plot_zdim": 0,
+    "plotmethod": "boxes2d",
+    "reach": true,
+    "reach-method": "approx-star",
+    "steps": 1,
+    "ub": "[92.0;30.0;0;31.0;30.2;0;-10.0]",
+    "ub-refInput": "[30;1.4]",
+    "verify": true
 }

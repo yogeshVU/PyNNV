@@ -1,4 +1,4 @@
-function plot_sets(starSet,method,varargin)
+function plot_sets_linear(starSet,method,varargin)
 
     %% plot_sets(starSet,method,varargin)
     % Generates a reachable set plot for NNV integration
@@ -16,7 +16,7 @@ function plot_sets(starSet,method,varargin)
     % inputs required.
     % For all other methods, user must specified color, x-dim and y-dim.
     % If method = 'ranges', y-dim corresponds to the times vector.
-    %starSet = starSet{1}
+    starSet = starSet{1}
     z_dim = 0
     x_dim = 0
     y_dim = 0
@@ -76,4 +76,3 @@ function plot_sets(starSet,method,varargin)
     disp(filename_)
     saveas(f,filename_);
     end
-    

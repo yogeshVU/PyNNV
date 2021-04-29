@@ -48,6 +48,9 @@ class NNCS_Dlinear:
         self.verify = False
         self.reach = False
 
+        self.plotmethod = ""
+        self.plotdim = []
+
     def setPlant(self,A,B,C,D,Ts):
         self.A =  A
         self.B = B
@@ -153,12 +156,30 @@ class NNCS_Dlinear:
         self.setController(data['nnfile'])
         self.parseReachParam(lb=newdata['lb'],ub=newdata['ub'], numSteps=data['steps'],reachMethod=data['reach-method'],
                             numCores=data['cores'],lbRef=newdata['lb-refInput'],ubRef=newdata['ub-refInput'], halfSpaceMatrix= newdata['HalfSpace-matrix'], halfSpaceVector= newdata['HalfSpace-vector'] ,doReachability=newdata['reach'],doVerify=newdata['verify'])
+        self.parsePlotInfo(data)
+
+    def parsePlotInfo(self, data):
+
+        # if data['reach']==1 and data['plotConfig']:
+        #     self.plotmethod = data['plotConfig']['method']
+        #     for i in range(len(data['plotConfig']['options'])):
+        #         print("i==",i)
+        #         self.plotdim.append( data['plotConfig']['options']['dim'+str(i+1)])
+
+        if data['reach']==1 and data['plotmethod']:
+            self.plotmethod = data['plotmethod']
+            self.plotdim.append(data['plot_xdim'])
+            self.plotdim.append(data['plot_ydim'])
+            self.plotdim.append(data['plot_zdim'])
+
+        print(self.plotdim)
+        print("method ==>", self.plotmethod)
 
     def execute(self):
         self.getNNCS()
     
     def invokeReachibility(self):
-        return self.eng.DLinearNNCS_reach(self.nnfile,self.A,self.B,self.C,self.D,self.Ts,self.lb,self.ub,self.steps,self.reach_method,self.cores,self.lbRefInput,self.ubRefInput)
+        return self.eng.DLinearNNCS_reach(self.nnfile,self.A,self.B,self.C,self.D,self.Ts,self.lb,self.ub,self.steps,self.reach_method,self.cores,self.lbRefInput,self.ubRefInput,nargout=2)
 
     def invokeVerifier(self):
         return self.eng.DLinearNNCS_verify(self.nnfile,self.A,self.B,self.C,self.D,self.Ts,self.lb,self.ub,self.steps,self.reach_method,self.cores,self.lbRefInput,self.ubRefInput,self.HalfSpaceMatrix,self.HalfSpaceVector)
@@ -169,21 +190,49 @@ class NNCS_Dlinear:
     def doReach(self):
         return self.reach    
 
-    
     def compute(self):
         result = {}
         if self.doReach():
+            # result['reachability'] = self.invokeReachibility()
+            # R, rT = simObj.invokeReachibility()
+            # simObj.plotReachSet(R)
             result['reachability'] = self.invokeReachibility()
+            R, rT = result['reachability']
+            self.plotReachSetNew(R)
 
-        if self.doVerify():
-            result['verification'] = self.invokeVerifier()
-        return result
+    def plotReachSet(self,starSet,method='boxes2d',color='r',xdim=1,ydim=2,zdim=None):
+        # - method: choose from ['exact','boxes2d', 'boxes3d', 'ranges', 'nofill']
+        # %      1) color: color for the reach sets (e.g. 'r')
+        # %      2) x-dim: dimension of set to plot in x-axis
+        # %      3) y-dim: dimension of set to plot in y-axis
+        # %      4) z-dim: dimension of set to plot in z-axis (only for 'boxes3d')
+        # R{1},'boxes2d','r',1,2
+        # >> plot_sets(R{1},'boxes2d','r',1,2)
+        # >> plot_sets(R{1},'boxes3d','r',1,2,4)
+        # >> plot_sets(R{1},'nofill','r',1,2)
+        # return self.eng.plot_sets(starSet, method, color, xdim, ydim, zdim, nargout=0)
+        if ydim==0:
+            return self.eng.plot_sets_linear(starSet,method,color,xdim,nargout=0)
+        elif zdim==0:
+            return self.eng.plot_sets_linear(starSet,method,color,xdim,ydim,nargout=0)
+        else:
+            return self.eng.plot_sets_linear(starSet, method, color, xdim, ydim, zdim, nargout=0)
+
+    def plotReachSetNew(self,starSet):
+        print("Method is :", self.plotmethod)
+        print("plotdim is: ",self.plotdim)
+        print(self.plotmethod,self.plotdim[0],self.plotdim[1] or None,self.plotdim[2] )
+
+        return self.plotReachSet(starSet,method=self.plotmethod,xdim=self.plotdim[0],ydim=self.plotdim[1] ,zdim=self.plotdim[2])
 
 def main():
 
-    jsonfile = Path(Path(__file__).absolute().parent, "example_inputs", "DiscreteLinearNNCS", "template_parameters.json")
-    input_dir_path = Path(Path(__file__).absolute().parent, "example_inputs", "DiscreteLinearNNCS")
+    # jsonfile = Path(Path(__file__).absolute().parent, "example_inputs", "DiscreteLinearNNCS", "template_parameters.json")
+    # input_dir_path = Path(Path(__file__).absolute().parent, "example_inputs", "DiscreteLinearNNCS")
     config_file = 'config.ini'
+
+    input_dir_path = Path(Path(__file__).absolute().parent, "templates/NNCS/DLinear")
+    jsonfile = Path(Path(__file__).absolute().parent, "templates", "NNCS", "DLinear", 'inputJson.json')
 
     config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
     config.read(config_file)

@@ -1,0 +1,29 @@
+Linear/Non-Linear
+
+
+    %% plot_sets(starSet,method,varargin)
+    % Generates a reachable set plot for NNV integration
+    % Inputs:
+    %   - starSet: reachable set to plot (Star)
+    %   - method: choose from ['exact','boxes2d', 'boxes3d', 'ranges', 'nofill']
+    %   - varagin:
+    %      1) color: color for the reach sets (e.g. 'r')
+    %      2) x-dim: dimension of set to plot in x-axis
+    %      3) y-dim: dimension of set to plot in y-axis
+    %      4) z-dim: dimension of set to plot in z-axis (only for 'boxes3d')
+
+
+    starset
+    User Input:
+    -->method : ['exact','boxes2d', 'boxes3d', 'ranges', 'nofill']
+    X-dim:
+    y-Dim:
+    Z-Dim:
+
+    Discrete Linear:
+    ====================
+
+    -->method : nofill
+    X-dim: 1 (position of cars)
+    y-Dim: 4  (position of cars)
+    Z-Dim: no-selections

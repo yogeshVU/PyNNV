@@ -47,6 +47,9 @@ class NNCS_Linear:
         self.HalfSpaceMatrix = []  # // any matrix (G)
         self.HalfSpaceVector = []  # // any matrix (g)
         self.eng = eng
+
+        self.plotmethod = ""
+        self.plotdim = []
         
     def setPlant(self,A,B,C,D,Ts,reachableSteps):
         self.A =  A
@@ -152,6 +155,27 @@ class NNCS_Linear:
         self.parseReachParam(lb=newdata['lb'],ub=newdata['ub'], numSteps=data['steps'],reachMethod=data['reach-method'],
                             numCores=data['cores'],lbRef=newdata['lb-refInput'],ubRef=newdata['ub-refInput'], halfSpaceMatrix= newdata['HalfSpace-matrix'], halfSpaceVector= newdata['HalfSpace-vector'],doReachability=newdata['reach'],doVerify=newdata['verify'])
 
+        self.parsePlotInfo(data)
+
+    def parsePlotInfo(self, data):
+
+        # if data['reach']==1 and data['plotConfig']:
+        #     self.plotmethod = data['plotConfig']['method']
+        #     for i in range(len(data['plotConfig']['options'])):
+        #         print("i==",i)
+        #         self.plotdim.append( data['plotConfig']['options']['dim'+str(i+1)])
+
+        if data['reach']==1 and data['plotmethod']:
+            self.plotmethod = data['plotmethod']
+            self.plotdim.append(data['plot_xdim'])
+            self.plotdim.append(data['plot_ydim'])
+            self.plotdim.append(data['plot_zdim'])
+
+        print(self.plotdim)
+        print("method ==>", self.plotmethod)
+
+
+
     def execute(self):
         self.getNNCS()
     
@@ -176,6 +200,11 @@ class NNCS_Linear:
         result = {}
         if self.doReach():
             result['reachability'] = self.invokeReachibility()
+            # R, rT = simObj.invokeReachibility()
+            # simObj.plotReachSet(R)
+            result['reachability'] = self.invokeReachibility()
+            R, rT = result['reachability']
+            self.plotReachSetNew(R)
 
         if self.doVerify():
             result['verification'] = self.invokeVerifier()
@@ -192,7 +221,20 @@ class NNCS_Linear:
         # >> plot_sets(R{1},'boxes2d','r',1,2)
         # >> plot_sets(R{1},'boxes3d','r',1,2,4)
         # >> plot_sets(R{1},'nofill','r',1,2)
-        return self.eng.plot_sets(starSet,method,color,xdim,ydim,nargout=0)
+        # return self.eng.plot_sets(starSet, method, color, xdim, ydim, zdim, nargout=0)
+        if ydim==0:
+            return self.eng.plot_sets_linear(starSet,method,color,xdim,nargout=0)
+        elif zdim==0:
+            return self.eng.plot_sets_linear(starSet,method,color,xdim,ydim,nargout=0)
+        else:
+            return self.eng.plot_sets_linear(starSet, method, color, xdim, ydim, zdim, nargout=0)
+
+    def plotReachSetNew(self,starSet):
+        print("Method is :", self.plotmethod)
+        print("plotdim is: ",self.plotdim)
+        print(self.plotmethod,self.plotdim[0],self.plotdim[1] or None,self.plotdim[2] )
+
+        return self.plotReachSet(starSet,method=self.plotmethod,xdim=self.plotdim[0],ydim=self.plotdim[1] ,zdim=self.plotdim[2])
 
 
 def main():
@@ -230,6 +272,10 @@ def main():
     # simObj.invokeReachibility()
     # simObj.printDebug()
     # simObj.invokeVerifier()
+    # R, rT = simObj.invokeReachibility()
+    # simObj.plotReachSet(R)
+    # simObj.plotReachSetNew(R)
+    # print(R)
 
     # if simObj.doReach():
     #     R,rT = simObj.invokeReachibility()

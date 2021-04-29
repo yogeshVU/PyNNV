@@ -39,6 +39,8 @@ function [R, reachTime] = NonLinearNNCS_reach(NN_path,dynamics_func,dim,nI,Ts,co
         reachPRM.ref_input = [];
     end
     [R,reachTime] = nncs.reach(reachPRM); % Execute reachability analysis
+    disp('R,reachTime')
+    disp(R)
     save('starset.mat','R','-v7.3')
 
     end
